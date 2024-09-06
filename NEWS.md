@@ -7,7 +7,7 @@ Plusieurs infos en vrac :
 
 * Je vous ai ajouté à la main à la table TOMUSS. Vous avez donc maintenant la case « URL Projet » que vous pouvez remplir comme indiqué dans le sujet. Si vous recevez ce mail et que vous ne devez pas suivre l'UE cette année, dites-le moi et je vous enlèverai de la liste. Inversement si vous avez des co-promo M1 qui suivent l'UE et qui n'ont pas reçu ce message, dites-leur de m'envoyer un mail pour que je les ajoute.
 
-* Au cas où vous n'auriez pas encore trouvé l'URL du cours, la voici : https://tomuss.univ-lyon1.fr/
+* Au cas où vous n'auriez pas encore trouvé l'URL du cours, la voici : https://forge.univ-lyon1.fr/matthieu.moy/mif01
 
 * Certains d'entre vous ont eu des problèmes pour se connecter à la forge GitLab, qui leur donnait une « erreur 422 ». Si vous êtes concernés, merci de m'envoyer un mail avec « erreur 422 » dans le sujet (je n'ai pas besoin d'autres détails). J'ai dit à plusieurs personnes de m'envoyer un mail tout à l'heure, et je n'en ai reçu qu'un... Si je n'ai pas accusé réception de votre message, renvoyez-le.
 
