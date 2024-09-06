@@ -37,8 +37,7 @@ public class JfxView {
      * Main view of the application.
      */
         // TODO: style error in the following line. Check that checkstyle finds it, and then fix it.
-        public JfxView(final Y y, final Stage stage,
-                       final int width, final int height){
+        public JfxView(final Y y, final Stage stage,  final int width, final int height){
         stage.setTitle("Y Microblogging");
 
         this.model = y;
@@ -92,7 +91,7 @@ public class JfxView {
             VBox msgBox = createMessageWidget(m, new MessageData());
             userMsg.getChildren().add(msgBox);
         }
-        sortMessages();
+        //sortMessages();
     }
 
     void bookmarkMessage(final Message m, final User user) {
@@ -209,6 +208,11 @@ public class JfxView {
 
         final Label label = new Label(m.getContent());
         msgBox.getChildren().add(label);
+
+        final Label dateLabel = new Label(m.getDate());
+        dateLabel.setTextFill(Color.RED);
+        msgBox.getChildren().add(dateLabel);
+        //System.out.println(m.getDate());
 
 
         final Label score = new Label("Score: " + d.getScore());
