@@ -77,6 +77,7 @@ public class JfxView {
             Pane textBox = createInputWidget(u);
             userBox.getChildren().addAll(userID, userMsgBox, textBox);
         }
+
     }
 
     /**
