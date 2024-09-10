@@ -10,7 +10,7 @@ public class Message {
     private String content;
 
     /**
-     * Ajout des attributs pour récupérer la date
+     * Ajout des attributs pour récupérer la date.
      */
     private final Date date;
     private final SimpleDateFormat dateFormat;
@@ -19,7 +19,7 @@ public class Message {
     }
 
     /**
-     * Fonction get pour récupérer la date
+     * Fonction get pour récupérer la date.
      */
 
     public String getDate() {

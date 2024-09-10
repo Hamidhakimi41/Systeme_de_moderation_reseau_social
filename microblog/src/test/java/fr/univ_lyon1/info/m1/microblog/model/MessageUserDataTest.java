@@ -26,7 +26,7 @@ public class MessageUserDataTest {
 
         // Then
         // TODO: this is obviously wrong, fix the expected value.
-        assertThat(s, is("This should be 'Some content'"));
+        assertThat(s, is("Some content"));
     }
 
     @Test

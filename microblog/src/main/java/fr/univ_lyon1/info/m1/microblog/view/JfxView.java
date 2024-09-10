@@ -1,7 +1,7 @@
 package fr.univ_lyon1.info.m1.microblog.view;
 
 
-import java.text.SimpleDateFormat;
+//import java.text.SimpleDateFormat;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -12,7 +12,7 @@ import fr.univ_lyon1.info.m1.microblog.model.Message;
 import fr.univ_lyon1.info.m1.microblog.model.MessageData;
 import fr.univ_lyon1.info.m1.microblog.model.User;
 import fr.univ_lyon1.info.m1.microblog.model.Y;
-import javafx.geometry.Pos;
+//import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -37,7 +37,7 @@ public class JfxView {
      * Main view of the application.
      */
         // TODO: style error in the following line. Check that checkstyle finds it, and then fix it.
-        public JfxView(final Y y, final Stage stage,  final int width, final int height){
+        public JfxView(final Y y, final Stage stage,  final int width, final int height) {
         stage.setTitle("Y Microblogging");
 
         this.model = y;

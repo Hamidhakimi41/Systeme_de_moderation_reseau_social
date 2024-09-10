@@ -1,6 +1,6 @@
 package fr.univ_lyon1.info.m1.microblog.model;
 
-import java.util.Date;
+//import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -99,9 +99,9 @@ public class MessageData {
                     return 1;
                 }
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new  AssertionError("cas no couvert dans la comparaison");
 
         }
-}}
+    }
+}
