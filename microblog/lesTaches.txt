@@ -1,0 +1,3 @@
+-la fonction sortMessage() se trouvant JFXvien à tranferer dans le model, plus concretement dans Y
+- la fonction publish à examiner en detaille
+-getMessageList et SetmessageList
