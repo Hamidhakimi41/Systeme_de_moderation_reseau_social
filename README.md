@@ -31,8 +31,6 @@ Barème : 40% examen / 60% TP (une note pour le rapport, une note pour le code).
 
 * [Matthieu Moy](https://matthieu-moy.fr/) (responsable du cours)
 * [Lionel Medini](https://perso.liris.cnrs.fr/lionel.medini/)
-* [Joël Felderhoff](https://perso.jfelderhoff.fr/)
-* [Mathieu Hilaire](https://liris.cnrs.fr/page-membre/mathieu-hilaire)
 
 ## Enseignement présentiel, vidéos et messagerie instantanée
 
@@ -210,7 +208,9 @@ email, ce fichier en contient une copie.
 
 * Transparents : [Présentation_spotify_v2.pdf](http://matthieu-moy.fr/cours/mif01/Présentation_spotify_v2.pdf)
 
-## TP 6 (5/11/2024, 15h45) : Tests
+## TP 6 (5/11/2024, 15h45 et 8/11/2024, 11h30) : Tests
+
+Suite à un conflit d'emploi du temps d'un intervenant, le TP est coupé en deux : 5/11/2024, 15h45 et 8/11/2024, 11h30. Vous pouvez venir au choix à l'un, l'autre, ou aux deux créneaux. Matthieu Moy sera là le mardi, Lionel Medini le vendredi.
 
 * Énoncé : [TP4-tests/README.md](TP4-tests/README.md)
 
