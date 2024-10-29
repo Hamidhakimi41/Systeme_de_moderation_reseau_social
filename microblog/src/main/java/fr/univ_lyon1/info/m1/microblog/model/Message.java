@@ -35,4 +35,5 @@ public class Message {
         this.dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  //On formate la date
     }
 
+
 }
