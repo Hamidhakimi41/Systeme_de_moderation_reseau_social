@@ -1,15 +1,16 @@
 package fr.univ_lyon1.info.m1.microblog.view;
 
 
-//import java.text.SimpleDateFormat;
-
-import java.util.*;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
+import java.util.Observable;
+import java.util.Observer;
+
+
 import fr.univ_lyon1.info.m1.microblog.controleur.Controleur;
 import fr.univ_lyon1.info.m1.microblog.model.Message;
 import fr.univ_lyon1.info.m1.microblog.model.MessageData;
 import fr.univ_lyon1.info.m1.microblog.model.User;
-//import javafx.geometry.Pos;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -163,6 +164,7 @@ public class JfxView implements Observer {
         if (arg instanceof User) {
             User updatedUser = (User) arg;
             Platform.runLater(() -> updateUserPane(updatedUser));
+            Platform.runLater(this::refresh);
         } else {
             // Si l'argument n'est pas un utilisateur, on rafraîchit tout
             Platform.runLater(this::refresh);

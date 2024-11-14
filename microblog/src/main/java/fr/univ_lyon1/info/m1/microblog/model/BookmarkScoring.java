@@ -33,6 +33,7 @@ public class BookmarkScoring {
                 if (bookmarkedWords.contains(w)) {
                     score++;
                 }
+
             }
             d.setScore(score);
         });

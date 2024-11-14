@@ -1,7 +1,12 @@
 package fr.univ_lyon1.info.m1.microblog.model;
 
-//import java.security.Key;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Observable;
 
 /**
  * Toplevel class for the Y microbloging application's model.
@@ -39,18 +44,26 @@ public class Y extends Observable {
 
 
     /** Post a message. */ // on va le faire avec les observables
-     public void add(final User user, final String text) {
-         if (usersMessages.get(user) != null) {
-             usersMessages.get(user).put(new Message(text), new MessageData());
-         } else {
-             LinkedHashMap<Message, MessageData> l = new LinkedHashMap<>();
-            // users.add(user);
-             l.put(new Message(text), new MessageData());
-             usersMessages.put(user, l);
+    public void add(final User user, final String text) {
+        // Créer une seule instance de Message
+        Message message = new Message(text);
 
-         }
-         setChanged();
-         notifyObservers(user);
+        // Ajouter le même message pour tous les  utilisateurs
+        for (User u : users) {
+
+                if (usersMessages.get(u) != null) {
+                    usersMessages.get(u).put(message, new MessageData());
+                } else {
+                    LinkedHashMap<Message, MessageData> l = new LinkedHashMap<>();
+                    l.put(message, new MessageData());
+                    usersMessages.put(u, l);
+                }
+
+            }
+
+        // Notifier les observateurs que l'utilisateur a ajouté un message
+        setChanged();
+        notifyObservers(user);
     }
 
     /**
@@ -89,41 +102,6 @@ public class Y extends Observable {
     private void  setMessageList(final LinkedHashMap<Message, MessageData> messages, final User u) {
         usersMessages.put(u, messages);
     }
-
-    /**
-     *
-     * @param idMessage
-     */
-    public void  ajouterMessageAtous(final String idMessage) {
-         LinkedHashMap<Message, MessageData> l = new LinkedHashMap<>();
-         l.put(new Message(idMessage), new MessageData());
-         for (User u:users) {
-             add(u, idMessage);
-         }
-
-    }
-    // just for debugging
-
-    /**
-     * .
-     */
-    public  void affiche() {
-         LinkedHashMap<Message, MessageData> l;
-         for (User u:users) {
-             l = usersMessages.get(u);
-
-                 if (l != null) {  // Vérifier si l est null
-                     for (Message m : l.keySet()) {
-                         System.out.println(m.getContent());
-                     }
-                 } else {
-                     // Optionnel : gérer le cas où l'utilisateur n'a pas de messages
-                     System.out.println("Pas de messages pour l'utilisateur : " + u.getId());
-                 }
-
-             }
-
-         }
 
     /**
      *

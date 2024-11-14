@@ -1,7 +1,6 @@
 package fr.univ_lyon1.info.m1.microblog;
 
 import fr.univ_lyon1.info.m1.microblog.controleur.Controleur;
-//import fr.univ_lyon1.info.m1.microblog.model.Message;
 import fr.univ_lyon1.info.m1.microblog.model.Y;
 import fr.univ_lyon1.info.m1.microblog.view.JfxView;
 import javafx.application.Application;
@@ -19,20 +18,13 @@ public class App extends Application {
     public void start(final Stage stage) throws Exception {
         final Y y = new Y();
 
-       /* y.createUser("hamid");
-        y.createUser("amine");
-        y.createUser("foo");
-        y.createUser("bar");*/
+
         y.createExampleMessages();
         System.out.println(y.getUsers().size());
         Controleur controleur = new Controleur(y);
 
         JfxView v = new JfxView(controleur, stage, 600, 600);
         y.addObserver(v);
-        //controleur.getModel().createExampleMessages();
-
-        controleur.getModel().affiche();
-
 
         // Second view (uncomment to activate)
         y.addObserver(new JfxView(controleur, new Stage(), 400, 400));
