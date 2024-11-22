@@ -16,8 +16,13 @@ public class Y extends Observable {
     private List<User> users = new ArrayList<>();
     private LinkedHashMap<User, LinkedHashMap<Message, MessageData>>
             usersMessages = new LinkedHashMap<>();
+
     // Stratégie de scoring actuelle (par défaut : BookmarkScoring)
     private ScoringStrategy scoringStrategy = new BookmarkScoring();
+
+    // Seuil de score pour afficher un message = 0
+    private static final int SCORE_THRESHOLD = 0;
+
     // Map associant chaque utilisateur à sa stratégie de scoring
     private Map<User, ScoringStrategy> userScoringStrategies = new HashMap<>();
 
@@ -39,7 +44,8 @@ public class Y extends Observable {
         add(foo, "GL c'est cool");
         add(bar, "les etudes sans dure");
 
-
+        // Calculer les scores des messages après leur création
+        sortMessages();
     }
 
     /** Get the users in the registry. */
@@ -48,7 +54,7 @@ public class Y extends Observable {
     }
 
 
-    /** Post a message. */ // on va le faire avec les observables
+    /** Post a message, with observer notification. **/
     public void add(final User user, final String text) {
         // Créer une seule instance de Message
         Message message = new Message(text);
@@ -63,8 +69,10 @@ public class Y extends Observable {
                     l.put(message, new MessageData());
                     usersMessages.put(u, l);
                 }
-
             }
+
+        // Calculer les scores des messages après l'ajout d'un nouveau message
+        sortMessages();
 
         // Notifier les observateurs que l'utilisateur a ajouté un message
         setChanged();
@@ -138,6 +146,23 @@ public class Y extends Observable {
         }
         setChanged();
         notifyObservers(user);
+    }
+
+    // filtrer les messages en fonction du score
+    public LinkedHashMap<Message, MessageData> getFilteredMessages(User user) {
+        System.out.println("ici getFilteredMessages, user = " + user.getId());
+        LinkedHashMap<Message, MessageData> filteredMessages = new LinkedHashMap<>();
+        LinkedHashMap<Message, MessageData> messages = getMessageList(user);
+        //System.out.println("taille de messages = " + messages.size());
+
+        messages.forEach((Message m, MessageData d) -> {
+            if (d.getScore() >= SCORE_THRESHOLD) {
+                filteredMessages.put(m, d);
+            }
+        });
+        //System.out.println("taille de filteredMessages = " + filteredMessages.size());
+
+        return filteredMessages;
     }
 
 }

@@ -27,6 +27,7 @@ public class Controleur {
 
     public void publishMessage(final User user, final String content) {
         model.add(user, content);
+        model.notifyObservers(user);
     }
 
     /**

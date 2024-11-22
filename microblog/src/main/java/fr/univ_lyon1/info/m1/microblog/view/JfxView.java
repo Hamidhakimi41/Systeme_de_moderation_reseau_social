@@ -192,8 +192,8 @@ public class JfxView implements Observer {
         VBox userMessageBox = getUserMessageBox(user);
         if (userMessageBox != null) {
             userMessageBox.getChildren().clear();  // Efface les anciens messages
-            LinkedHashMap<Message, MessageData> messages;
-            messages = controller.getModel().getMessageList(user);
+            // Récupérer les messages filtrés pour l'utilisateur
+            LinkedHashMap<Message, MessageData> messages = controller.getModel().getFilteredMessages(user);
 
             if (messages != null && !messages.isEmpty()) {
                 for (Entry<Message, MessageData> entry : messages.entrySet()) {
