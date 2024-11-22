@@ -20,14 +20,14 @@ public class App extends Application {
 
 
         y.createExampleMessages();
-        System.out.println(y.getUsers().size());
+        //System.out.println(y.getUsers().size());
         Controleur controleur = new Controleur(y);
 
         JfxView v = new JfxView(controleur, stage, 600, 600);
         y.addObserver(v);
 
         // Second view (uncomment to activate)
-        y.addObserver(new JfxView(controleur, new Stage(), 400, 400));
+        //y.addObserver(new JfxView(controleur, new Stage(), 400, 400));
 
     }
 

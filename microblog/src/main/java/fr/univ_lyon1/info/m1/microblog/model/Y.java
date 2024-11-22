@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Observable;
 
 /**
@@ -15,6 +16,10 @@ public class Y extends Observable {
     private List<User> users = new ArrayList<>();
     private LinkedHashMap<User, LinkedHashMap<Message, MessageData>>
             usersMessages = new LinkedHashMap<>();
+    // Stratégie de scoring actuelle (par défaut : BookmarkScoring)
+    private ScoringStrategy scoringStrategy = new BookmarkScoring();
+    // Map associant chaque utilisateur à sa stratégie de scoring
+    private Map<User, ScoringStrategy> userScoringStrategies = new HashMap<>();
 
     /** Create a user and add it to the user's registry. */
     public User createUser(final String id) {
@@ -67,12 +72,26 @@ public class Y extends Observable {
     }
 
     /**
-     *
+     * modifier la stratégie de scoring pour un utilisateur donné
+     */
+    public void setScoringStrategy(User user, ScoringStrategy selectedStrategy) {
+        userScoringStrategies.put(user, selectedStrategy);
+        System.out.println("Stratégie de scoring modifiée pour " + user.getId());
+    }
+
+    /**
+     * Sort messages for all users using the current scoring strategy.
+     * ForbiddenWordsScoring , RecentMessageScoring sont des classes qui héritent de BookmarkScoring
+     * et qui surchargent la méthode computeScores pour calculer les scores des messages différemment
      */
     public void sortMessages() {
         for (User u : this.getUsers()) {
             LinkedHashMap<Message, MessageData> messageList = getMessageList(u);
-            new BookmarkScoring().computeScores(messageList);
+
+            // On récupère la stratégie de scoring de l'utilisateur, ou on utilise la stratégie par défaut
+            ScoringStrategy strategy = userScoringStrategies.getOrDefault(u, new BookmarkScoring());
+            strategy.computeScores(messageList);
+
             LinkedHashMap<Message, MessageData> sortedMessageList = new LinkedHashMap<>();
             messageList.entrySet()
                     .stream()
@@ -88,6 +107,7 @@ public class Y extends Observable {
         // on marque que le model a changé et on notifie les vues
         setChanged();
         notifyObservers();
+        System.out.println("Messages triés");
     }
 
     /**
@@ -119,7 +139,5 @@ public class Y extends Observable {
         setChanged();
         notifyObservers(user);
     }
-
-
 
 }

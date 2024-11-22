@@ -25,6 +25,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import fr.univ_lyon1.info.m1.microblog.model.BookmarkScoring;
+import fr.univ_lyon1.info.m1.microblog.model.ForbiddenWordsScoring;
+import fr.univ_lyon1.info.m1.microblog.model.RecentMessageScoring;
+import fr.univ_lyon1.info.m1.microblog.model.ScoringStrategy;
+import javafx.scene.control.ComboBox;
+
 /**
  * Main class of the View (GUI) of the application.
  */
@@ -45,7 +51,10 @@ public class JfxView implements Observer {
         this.controller = controller;
         stage.setTitle("Y Microblogging");
 
+        // Création de la structure de base de l'interface utilisateur
         final VBox root = new VBox(10);
+
+        // Création de la boîte contenant les utilisateurs
         users = new HBox(10);
         root.getChildren().add(users);
 
@@ -58,7 +67,6 @@ public class JfxView implements Observer {
     /**
      * Create the pane containing all user's, from the users' registry contained in the model.
      */
-
     private void createUsersPanes() {
         users.getChildren().clear();
         for (User u : controller.getModel().getUsers()) {
@@ -70,8 +78,24 @@ public class JfxView implements Observer {
 
             VBox userMsgBox = new VBox();
             Label userID = new Label(u.getId());
+
+            // ComboBox for selecting the scoring strategy for each user
+            ComboBox<ScoringStrategy> userStrategyComboBox = new ComboBox<>();
+            userStrategyComboBox.setPromptText("Sélectionnez une stratégie de scoring");
+            userStrategyComboBox.getItems().addAll(
+                    new BookmarkScoring(),
+                    new RecentMessageScoring(),
+                    new ForbiddenWordsScoring()
+            );
+            // Au clic sur une stratégie, on la définit pour l'utilisateur
+            userStrategyComboBox.setOnAction(event -> {
+                ScoringStrategy selectedStrategy = userStrategyComboBox.getSelectionModel().getSelectedItem();
+                controller.getModel().setScoringStrategy(u, selectedStrategy);
+                controller.sortMessages();
+            });
+
             Pane textBox = createInputWidget(u);
-            userBox.getChildren().addAll(userID, userMsgBox, textBox);
+            userBox.getChildren().addAll(userID, userStrategyComboBox, userMsgBox, textBox);
         }
     }
 
@@ -94,21 +118,14 @@ public class JfxView implements Observer {
                 if (userIDLabel.getText().equals(user.getId())) {
                     // Le VBox contenant les messages est le deuxième enfant (par exemple)
                     // Retourne le VBox contenant les messages
-                    return (VBox) userBox.getChildren().get(1);
+                    return (VBox) userBox.getChildren().get(2);
 
                 }
             }
         }
-
         return null;  // Si aucun VBox ne correspond à l'utilisateur
     }
-    /**
-     * Get a clean list of messages and the associated metadata from the GUI.
-     *
-     * TODO: never, ever do that. This is the opposite of what a good programmer
-     * would do: information is stored directly in the GUI. This method must be
-     * deleted before the final version (using a proper MVC).
-     */
+
 
     static final String MSG_STYLE = "-fx-background-color: white; "
             + "-fx-border-color: black; -fx-border-width: 1;"
@@ -153,6 +170,7 @@ public class JfxView implements Observer {
         Button s = new Button("Publish");
         s.setOnAction(e -> {
             controller.publishMessage(u, t.getText());
+            controller.sortMessages(); // On trie les messages après un ajout
             t.clear();
         });
         input.getChildren().addAll(t, s);
@@ -160,7 +178,7 @@ public class JfxView implements Observer {
     }
     @Override
     public void update(final Observable o, final Object arg) {
-        System.out.println("changement");
+        //System.out.println("changement");
         if (arg instanceof User) {
             User updatedUser = (User) arg;
             Platform.runLater(() -> updateUserPane(updatedUser));

@@ -1,5 +1,6 @@
 package fr.univ_lyon1.info.m1.microblog.model;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
@@ -8,32 +9,29 @@ import java.text.SimpleDateFormat;
  */
 public class Message {
     private String content;
-
-    /**
-     * Ajout des attributs pour récupérer la date.
-     */
     private final Date date;
     private final SimpleDateFormat dateFormat;
+    private final LocalDateTime timestamp;
+
     public String getContent() {
         return content;
     }
-
-    /**
-     * Fonction get pour récupérer la date.
-     */
 
     public String getDate() {
         return dateFormat.format(date);
     }
 
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
     /**
-     * Build a Message object from it's (String) content.
+     * Build a Message object from its (String) content.
      */
     public Message(final String content) {
         this.content = content;
         this.date = new Date();
-        this.dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  //On formate la date
+        this.dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        this.timestamp = LocalDateTime.now();
     }
-
-
 }
