@@ -173,4 +173,19 @@ public class Y extends Observable {
         return filteredMessages;
     }
 
+    /**
+     * Supprimer un message
+     * @param message
+     */
+    public void deleteMessage(final Message message) {
+        for (User user : users) {
+            LinkedHashMap<Message, MessageData> userMessages = usersMessages.get(user);
+            if (userMessages != null) {
+                userMessages.remove(message);
+            }
+        }
+        setChanged();
+        notifyObservers();
+    }
+
 }

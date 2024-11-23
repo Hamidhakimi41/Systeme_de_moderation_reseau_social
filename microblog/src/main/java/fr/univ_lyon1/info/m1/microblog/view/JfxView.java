@@ -12,6 +12,7 @@ import fr.univ_lyon1.info.m1.microblog.model.Message;
 import fr.univ_lyon1.info.m1.microblog.model.MessageData;
 import fr.univ_lyon1.info.m1.microblog.model.User;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -138,20 +139,33 @@ public class JfxView implements Observer {
     private VBox createMessageWidget(final Message m, final MessageData d, final User user) {
         VBox msgBox = new VBox();
 
-        String bookmarkText = d.isBookmarked() ? "⭐" : "Click to bookmark";
+        // HBox pour le bouton de bookmark + le bouton de suppression
+        HBox buttonBox = new HBox();
+        buttonBox.setAlignment(Pos.TOP_RIGHT);
+
+        String bookmarkText = d.isBookmarked() ? " ★ " : " ☆ ";
         Button bookButton = new Button(bookmarkText);
         bookButton.setOnAction(e -> {
             controller.bookmarkMessage(m, user); // On passe l'action de bookmark au contrôleur
             controller.sortMessages(); // On trie les messages après un changement de bookmark
         });
 
-        msgBox.getChildren().add(bookButton);
-        final Label label = new Label(m.getContent());
+        // Bouton de suppression
+        Button deleteButton = new Button(" ❌ ");
+        deleteButton.setOnAction(e -> {
+            controller.getModel().deleteMessage(m);
+            controller.sortMessages();
+        });
+
+        buttonBox.getChildren().addAll(bookButton, deleteButton);   // Ajout des boutons
+        msgBox.getChildren().add(buttonBox); // Ajout de la HBox contenant les boutons
+
+        Label label = new Label(m.getContent());
         msgBox.getChildren().add(label);
-        final Label dateLabel = new Label(m.getDate());
+        Label dateLabel = new Label(m.getDate());
         dateLabel.setTextFill(Color.RED);
         msgBox.getChildren().add(dateLabel);
-        final Label score = new Label("Score: " + d.getScore());
+        Label score = new Label("Score: " + d.getScore());
         score.setTextFill(Color.LIGHTGRAY);
         msgBox.getChildren().add(score);
         msgBox.setStyle(MSG_STYLE);
