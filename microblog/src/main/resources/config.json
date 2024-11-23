@@ -1,0 +1,18 @@
+{
+  "users": [
+    {
+      "id": "foo",
+      "messages": [
+        "salut tout le monde",
+        "GL c'est cool"
+      ]
+    },
+    {
+      "id": "bar",
+      "messages": [
+        "Hello les masters",
+        "les etudes sans dure"
+      ]
+    }
+  ]
+}

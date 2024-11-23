@@ -1,5 +1,8 @@
 package fr.univ_lyon1.info.m1.microblog.model;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -148,15 +151,20 @@ public class Y extends Observable {
         notifyObservers(user);
     }
 
-    // filtrer les messages en fonction du score
+    // filtrer les messages en fonction du score & de la date
     public LinkedHashMap<Message, MessageData> getFilteredMessages(User user) {
         System.out.println("ici getFilteredMessages, user = " + user.getId());
         LinkedHashMap<Message, MessageData> filteredMessages = new LinkedHashMap<>();
         LinkedHashMap<Message, MessageData> messages = getMessageList(user);
         //System.out.println("taille de messages = " + messages.size());
+        Instant oneWeekAgo = Instant.now().minus(7, ChronoUnit.DAYS);
 
+        // si le score est supérieur au seuil, et que le message est récent ou a un bonus, on l'ajoute
         messages.forEach((Message m, MessageData d) -> {
-            if (d.getScore() >= SCORE_THRESHOLD) {
+            Instant messageInstant = m.getTimestamp().atZone(ZoneId.systemDefault()).toInstant();
+            boolean isRecent = messageInstant.isAfter(oneWeekAgo);
+            boolean hasBonus = d.getScore() > SCORE_THRESHOLD;
+            if (d.getScore() >= SCORE_THRESHOLD && (isRecent || hasBonus)) {
                 filteredMessages.put(m, d);
             }
         });

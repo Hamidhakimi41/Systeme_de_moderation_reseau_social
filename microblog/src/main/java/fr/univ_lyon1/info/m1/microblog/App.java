@@ -1,5 +1,6 @@
 package fr.univ_lyon1.info.m1.microblog;
 
+import fr.univ_lyon1.info.m1.microblog.InitialConfiguration.InitialConfiguration;
 import fr.univ_lyon1.info.m1.microblog.controleur.Controleur;
 import fr.univ_lyon1.info.m1.microblog.model.Y;
 import fr.univ_lyon1.info.m1.microblog.view.JfxView;
@@ -18,11 +19,15 @@ public class App extends Application {
     public void start(final Stage stage) throws Exception {
         final Y y = new Y();
 
+        // Load configuration from file
+        InitialConfiguration config = new InitialConfiguration(y);
+        config.loadConfiguration("config.json");
 
-        y.createExampleMessages();
+        //y.createExampleMessages();
         //System.out.println(y.getUsers().size());
-        Controleur controleur = new Controleur(y);
 
+        // Create the controller and the main view
+        Controleur controleur = new Controleur(y);
         JfxView v = new JfxView(controleur, stage, 600, 600);
         y.addObserver(v);
 
