@@ -2,28 +2,36 @@ package fr.univ_lyon1.info.m1.microblog.InitialConfiguration;
 
 import com.google.gson.Gson;
 import fr.univ_lyon1.info.m1.microblog.model.Y;
-import fr.univ_lyon1.info.m1.microblog.model.User;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.List;
 
 /**
  * Class to load the initial configuration of the application from a JSON file.
  */
-public class InitialConfiguration {
+public final class InitialConfiguration {
 
     private final Y y;
 
-    public InitialConfiguration(Y y) {
+    /**
+     * Constructor.
+     *
+     * @param y the Y object to configure.
+     */
+    public InitialConfiguration(final Y y) {
         this.y = y;
     }
 
     /**
      * Load the configuration from a JSON file.
      *
-     * @param filePath the path to the JSON file
+     * @param filePath the path to the JSON file.
      */
-    public void loadConfiguration(String filePath) {
+    public void loadConfiguration(final String filePath) {
         System.out.println("Loading configuration from: " + filePath);
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filePath)) {
             if (inputStream == null) {
@@ -34,15 +42,14 @@ public class InitialConfiguration {
                 Gson gson = new Gson();
                 Config config = gson.fromJson(reader, Config.class);
 
-                System.out.println("Number of users loaded: " + config.users.size());
+                //System.out.println("Number of users loaded: " + config.users.size());
                 for (UserConfig userConfig : config.users) {
-                    System.out.println("Creating user with ID: " + userConfig.id);
+                    //System.out.println("Creating user with ID: " + userConfig.id);
                     y.createUser(userConfig.id);
                 }
 
                 for (UserConfig userConfig : config.users) {
                     for (String message : userConfig.messages) {
-                        System.out.println("Adding message: " + message);
                         y.add(null, message); // Add message to all users
                     }
                 }
@@ -53,12 +60,44 @@ public class InitialConfiguration {
         }
     }
 
-    // Classes to represent the JSON structure
-    private static class Config {
-        List<UserConfig> users;
+    /**
+     * Configuration class for Gson.
+     */
+    private static final class Config {
+        private List<UserConfig> users;
+
+        public void setUsers(final List<UserConfig> users) {
+            this.users = users;
+        }
+
+        public List<UserConfig> getUsers() {
+            return users;
+        }
     }
-    private static class UserConfig {
-        String id;
-        List<String> messages;
+
+    /**
+     * User configuration class for Gson.
+     */
+    private static final class UserConfig {
+        private String id;
+
+
+        private List<String> messages;
+
+        public void setId(final String id) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setMessages(final List<String> messages) {
+            this.messages = messages;
+        }
+
+        public List<String> getMessages() {
+            return messages;
+        }
     }
 }

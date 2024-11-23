@@ -11,7 +11,7 @@ import java.util.Set;
 public class BookmarkScoring implements ScoringStrategy {
 
     /**
-     * Calcule les scores pour les messages donnés, en appliquant un bonus pour les messages récents.
+     * Calcule les scores pour les messages, en appliquant un bonus pour les messages récents.
      * Le bonus est ajouté au score calculé par la classe parente.
      *
      * @param messagesData une map de messages et leurs données associées

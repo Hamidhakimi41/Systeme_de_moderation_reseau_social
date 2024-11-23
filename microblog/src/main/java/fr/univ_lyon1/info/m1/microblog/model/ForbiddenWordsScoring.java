@@ -13,11 +13,13 @@ import java.util.regex.Pattern;
  */
 public class ForbiddenWordsScoring extends RecentMessageScoring {
 
-    private static final Set<String> FORBIDDEN_WORDS = new HashSet<>(Arrays.asList("bad", "nana", "agh"));
+    private static final Set<String> FORBIDDEN_WORDS = new HashSet<>(Arrays.asList(
+            "bad", "nana", "agh"));
 
     /**
-     * Calcule les scores pour les messages donnés, en appliquant une pénalité pour les messages
-     * contenant des mots interdits. La pénalité est soustraite du score calculé par la classe parente.
+     * Calcule les scores pour les messages donnés, en appliquant une pénalité pour les
+     * messages contenant des mots interdits. La pénalité est soustraite du score calculé
+     * par la classe parente.
      *
      * @param messagesData une map de messages et leurs données associées
      */
@@ -28,7 +30,8 @@ public class ForbiddenWordsScoring extends RecentMessageScoring {
         messagesData.forEach((Message m, MessageData d) -> {
             for (String word : d.getWords()) {
                 for (String forbiddenWord : FORBIDDEN_WORDS) {
-                    Pattern pattern = Pattern.compile(".*" + Pattern.quote(forbiddenWord) + ".*", Pattern.CASE_INSENSITIVE);
+                    Pattern pattern = Pattern.compile(".*" + Pattern.quote(forbiddenWord)
+                            + ".*", Pattern.CASE_INSENSITIVE);
                     if (pattern.matcher(word).matches()) {
                         System.out.println("Message contenant un mot interdit");
                         d.setScore(d.getScore() - 5); // Malus de 5 points pour les mots interdits

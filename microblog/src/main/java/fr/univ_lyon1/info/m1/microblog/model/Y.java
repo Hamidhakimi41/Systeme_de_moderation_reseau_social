@@ -83,9 +83,9 @@ public class Y extends Observable {
     }
 
     /**
-     * modifier la stratégie de scoring pour un utilisateur donné
+     * modifier la stratégie de scoring pour un utilisateur donné.
      */
-    public void setScoringStrategy(User user, ScoringStrategy selectedStrategy) {
+    public void setScoringStrategy(final User user, final ScoringStrategy selectedStrategy) {
         userScoringStrategies.put(user, selectedStrategy);
         System.out.println("Stratégie de scoring modifiée pour " + user.getId());
     }
@@ -93,13 +93,13 @@ public class Y extends Observable {
     /**
      * Sort messages for all users using the current scoring strategy.
      * ForbiddenWordsScoring , RecentMessageScoring sont des classes qui héritent de BookmarkScoring
-     * et qui surchargent la méthode computeScores pour calculer les scores des messages différemment
+     * et qui surchargent la méthode computeScores pour calculer les scores des messages diff
      */
     public void sortMessages() {
         for (User u : this.getUsers()) {
             LinkedHashMap<Message, MessageData> messageList = getMessageList(u);
 
-            // On récupère la stratégie de scoring de l'utilisateur, ou on utilise la stratégie par défaut
+            // On récupère la stratégie de scoring de l'utilisateur, sinon la stratégie par défaut
             ScoringStrategy strategy = userScoringStrategies.getOrDefault(u, new BookmarkScoring());
             strategy.computeScores(messageList);
 
@@ -118,7 +118,7 @@ public class Y extends Observable {
         // on marque que le model a changé et on notifie les vues
         setChanged();
         notifyObservers();
-        System.out.println("Messages triés");
+        //System.out.println("Messages triés");
     }
 
     /**
@@ -151,15 +151,18 @@ public class Y extends Observable {
         notifyObservers(user);
     }
 
-    // filtrer les messages en fonction du score & de la date
-    public LinkedHashMap<Message, MessageData> getFilteredMessages(User user) {
-        System.out.println("ici getFilteredMessages, user = " + user.getId());
+    /**
+     * Récupérer les messages filtrés pour un utilisateur donné.
+     * @param user
+     * @return
+     */
+    public LinkedHashMap<Message, MessageData> getFilteredMessages(final User user) {
         LinkedHashMap<Message, MessageData> filteredMessages = new LinkedHashMap<>();
         LinkedHashMap<Message, MessageData> messages = getMessageList(user);
         //System.out.println("taille de messages = " + messages.size());
         Instant oneWeekAgo = Instant.now().minus(7, ChronoUnit.DAYS);
 
-        // si le score est supérieur au seuil, et que le message est récent ou a un bonus, on l'ajoute
+        // si le score est > au seuil, && le message est récent ou a un bonus, on l'ajoute
         messages.forEach((Message m, MessageData d) -> {
             Instant messageInstant = m.getTimestamp().atZone(ZoneId.systemDefault()).toInstant();
             boolean isRecent = messageInstant.isAfter(oneWeekAgo);
@@ -174,7 +177,7 @@ public class Y extends Observable {
     }
 
     /**
-     * Supprimer un message
+     * Supprimer un message pour tous les utilisateurs.
      * @param message
      */
     public void deleteMessage(final Message message) {

@@ -82,17 +82,25 @@ public class JfxView implements Observer {
 
             // ComboBox for selecting the scoring strategy for each user
             ComboBox<ScoringStrategy> userStrategyComboBox = new ComboBox<>();
-            userStrategyComboBox.setPromptText("Sélectionnez une stratégie de scoring");
+            userStrategyComboBox.setPromptText("Select scoring strategy :");
             userStrategyComboBox.getItems().addAll(
                     new BookmarkScoring(),
                     new RecentMessageScoring(),
                     new ForbiddenWordsScoring()
             );
-            // Au clic sur une stratégie, on la définit pour l'utilisateur
+
+            // Default display text to show selected strategy
+            Label selectedStrategyLabel = new Label("");
+
+            // On strategy selection, update the label and apply the strategy
             userStrategyComboBox.setOnAction(event -> {
-                ScoringStrategy selectedStrategy = userStrategyComboBox.getSelectionModel().getSelectedItem();
-                controller.getModel().setScoringStrategy(u, selectedStrategy);
-                controller.sortMessages();
+                ScoringStrategy selectedStrategy =
+                        userStrategyComboBox.getSelectionModel().getSelectedItem();
+                if (selectedStrategy != null) {
+                    selectedStrategyLabel.setText("Selected: " + selectedStrategy.toString());
+                    controller.getModel().setScoringStrategy(u, selectedStrategy);
+                    controller.sortMessages();
+                }
             });
 
             Pane textBox = createInputWidget(u);
@@ -207,7 +215,8 @@ public class JfxView implements Observer {
         if (userMessageBox != null) {
             userMessageBox.getChildren().clear();  // Efface les anciens messages
             // Récupérer les messages filtrés pour l'utilisateur
-            LinkedHashMap<Message, MessageData> messages = controller.getModel().getFilteredMessages(user);
+            LinkedHashMap<Message, MessageData> messages =
+                    controller.getModel().getFilteredMessages(user);
 
             if (messages != null && !messages.isEmpty()) {
                 for (Entry<Message, MessageData> entry : messages.entrySet()) {

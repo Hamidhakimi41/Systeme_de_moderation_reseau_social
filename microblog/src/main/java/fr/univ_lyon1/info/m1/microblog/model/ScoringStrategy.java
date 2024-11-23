@@ -2,6 +2,9 @@ package fr.univ_lyon1.info.m1.microblog.model;
 
 import java.util.Map;
 
+/**
+ * Interface for scoring strategies.
+ */
 public interface ScoringStrategy {
     /**
      * @param messagesData a map of messages and their associated data
