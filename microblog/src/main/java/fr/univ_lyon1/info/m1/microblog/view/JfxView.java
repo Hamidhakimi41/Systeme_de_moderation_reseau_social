@@ -198,6 +198,7 @@ public class JfxView implements Observer {
         input.getChildren().addAll(t, s);
         return input;
     }
+
     @Override
     public void update(final Observable o, final Object arg) {
         //System.out.println("changement");

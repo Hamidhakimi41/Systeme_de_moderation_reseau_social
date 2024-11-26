@@ -19,13 +19,13 @@ public class MessageUserDataTest {
     @Test
     void dummyTestMessageContent() {
         // Given
-        Message m = new Message("Some content");
+        Message m = new Message.Builder("Some content").build();
 
         // When
         String s = m.getContent();
 
         // Then
-        // TODO: this is obviously wrong, fix the expected value.
+
         assertThat(s, is("Some content"));
     }
 
@@ -34,11 +34,11 @@ public class MessageUserDataTest {
         // Given
         Map<Message, MessageData> msgs = new HashMap<>();
 
-        Message m1 = new Message("Hello, world!");
+        Message m1 = new Message.Builder("Hello, world!").build();
         add(msgs, m1);
-        Message m2 = new Message("Hello, you!");
+        Message m2 = new Message.Builder("Hello, you!").build();
         add(msgs, m2);
-        Message m3 = new Message("What is this message ?");
+        Message m3 = new Message.Builder("What is this message ?").build();
         add(msgs, m3);
         msgs.get(m1).setBookmarked(true);
 

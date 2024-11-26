@@ -37,7 +37,7 @@ public class Y extends Observable {
     }
 
     /**
-     * Create an example set of users and messages, for testing.
+     * Create an example set of users and messages, for testing (not any longuer used) .
      */
     public void createExampleMessages() {
         User foo = createUser("foo");
@@ -59,8 +59,8 @@ public class Y extends Observable {
 
     /** Post a message, with observer notification. **/
     public void add(final User user, final String text) {
-        // Créer une seule instance de Message
-        Message message = new Message(text);
+        // Créer une seule instance de Message pour tous les utilisateurs
+        Message message = new Message.Builder(text).build();
 
         // Ajouter le même message pour tous les  utilisateurs
         for (User u : users) {
@@ -83,7 +83,7 @@ public class Y extends Observable {
     }
 
     /**
-     * modifier la stratégie de scoring pour un utilisateur donné.
+     * Modifier la stratégie de scoring pour un utilisateur donné.
      */
     public void setScoringStrategy(final User user, final ScoringStrategy selectedStrategy) {
         userScoringStrategies.put(user, selectedStrategy);
