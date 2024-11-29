@@ -1,4 +1,7 @@
-package fr.univ_lyon1.info.m1.microblog.model;
+package fr.univ_lyon1.info.m1.microblog.model.scoring;
+
+import fr.univ_lyon1.info.m1.microblog.model.Message;
+import fr.univ_lyon1.info.m1.microblog.model.MessageData;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -14,7 +17,7 @@ import java.util.regex.Pattern;
 public class ForbiddenWordsScoring extends RecentMessageScoring {
 
     private static final Set<String> FORBIDDEN_WORDS = new HashSet<>(Arrays.asList(
-            "bad", "nana", "agh"));
+            "bad", "nana", "twitter"));
 
     /**
      * Calcule les scores pour les messages donnés, en appliquant une pénalité pour les

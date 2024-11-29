@@ -1,16 +1,24 @@
 package fr.univ_lyon1.info.m1.microblog.view;
 
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.Observable;
 import java.util.Observer;
+import java.util.Observable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 import fr.univ_lyon1.info.m1.microblog.controleur.Controleur;
 import fr.univ_lyon1.info.m1.microblog.model.Message;
 import fr.univ_lyon1.info.m1.microblog.model.MessageData;
 import fr.univ_lyon1.info.m1.microblog.model.User;
+import fr.univ_lyon1.info.m1.microblog.model.scoring.BookmarkScoringFactory;
+import fr.univ_lyon1.info.m1.microblog.model.scoring.ForbiddenWordsScoringFactory;
+import fr.univ_lyon1.info.m1.microblog.model.scoring.RecentMessageScoringFactory;
+import fr.univ_lyon1.info.m1.microblog.model.scoring.ScoringStrategyFactory;
+
+
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -29,11 +37,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
-
-import fr.univ_lyon1.info.m1.microblog.model.BookmarkScoring;
-import fr.univ_lyon1.info.m1.microblog.model.ForbiddenWordsScoring;
-import fr.univ_lyon1.info.m1.microblog.model.RecentMessageScoring;
-import fr.univ_lyon1.info.m1.microblog.model.ScoringStrategy;
 
 /**
  * Main class of the View (GUI) of the application.
@@ -72,6 +75,7 @@ public class JfxView implements Observer {
     /**
      * Create the pane containing all user's, from the users' registry contained in the model.
      */
+
     private void createUsersPanes() {
         users.getChildren().clear();
         for (User u : controller.getModel().getUsers()) {
@@ -84,31 +88,37 @@ public class JfxView implements Observer {
             VBox userMsgBox = new VBox();
             Label userID = new Label(u.getId());
 
+
+            // Map associant les noms des stratégies aux factories correspondantes
+            Map<String, ScoringStrategyFactory> strategyFactories = new HashMap<>();
+            strategyFactories.put("Bookmarked Messages", new BookmarkScoringFactory());
+            strategyFactories.put("Recent Messages", new RecentMessageScoringFactory());
+            strategyFactories.put("No ForbiddenWords", new ForbiddenWordsScoringFactory());
+
             // ComboBox pour la sélection de la stratégie de scoring
-            ComboBox<ScoringStrategy> userStrategyComboBox = new ComboBox<>();
+            ComboBox<String> userStrategyComboBox = new ComboBox<>();
             userStrategyComboBox.setPromptText("Select scoring strategy :");
-            userStrategyComboBox.getItems().addAll(
-                    new BookmarkScoring(),
-                    new RecentMessageScoring(),
-                    new ForbiddenWordsScoring()
-            );
+            userStrategyComboBox.getItems().addAll(strategyFactories.keySet());
 
             // Label pour afficher la stratégie sélectionnée
             Label selectedStrategyLabel = new Label("");
 
-            // Gestion de la sélection de la stratégie de scoring
+            /// Gestion de la sélection de la stratégie de scoring
             userStrategyComboBox.setOnAction(event -> {
-                ScoringStrategy selectedStrategy =
+                String selectedStrategyName =
                         userStrategyComboBox.getSelectionModel().getSelectedItem();
-                if (selectedStrategy != null) {
-                    selectedStrategyLabel.setText("Selected: " + selectedStrategy.toString());
-                    controller.getModel().setScoringStrategy(u, selectedStrategy);
+                ScoringStrategyFactory factory = strategyFactories.get(selectedStrategyName);
+
+                if (factory != null) {
+                    selectedStrategyLabel.setText("Selected: " + selectedStrategyName);
+                    controller.setScoringStrategy(u, factory);
                     controller.sortMessages();
                 }
             });
 
             Pane textBox = createInputWidget(u);
-            userBox.getChildren().addAll(userID, userStrategyComboBox, userMsgBox, textBox);
+            userBox.getChildren().addAll(
+                    userID, userStrategyComboBox, selectedStrategyLabel, userMsgBox, textBox);
         }
     }
 
@@ -129,10 +139,12 @@ public class JfxView implements Observer {
 
                 // Comparaison de l'ID de l'utilisateur pour trouver le bon VBox
                 if (userIDLabel.getText().equals(user.getId())) {
-                    // Le VBox contenant les messages est le deuxième enfant (par exemple)
+                    // Le 1er enfant est le Label avec l'ID utilisateur
+                    // Le 2ème enfant est le ComboBox pour la sélection de la stratégie de scoring
+                    // Le 3ème enfant est le Label pour afficher la stratégie sélectionnée
+                    // Le 4ème enfant est le VBox contenant les messages
                     // Retourne le VBox contenant les messages
-                    return (VBox) userBox.getChildren().get(2);
-
+                    return (VBox) userBox.getChildren().get(3);
                 }
             }
         }

@@ -4,6 +4,8 @@ import fr.univ_lyon1.info.m1.microblog.model.User;
 import fr.univ_lyon1.info.m1.microblog.model.Message;
 import fr.univ_lyon1.info.m1.microblog.model.decorator.MentionedMessageDecorator;
 import fr.univ_lyon1.info.m1.microblog.model.decorator.TaggedMessageDecorator;
+import fr.univ_lyon1.info.m1.microblog.model.scoring.ScoringStrategy;
+import fr.univ_lyon1.info.m1.microblog.model.scoring.ScoringStrategyFactory;
 import javafx.scene.text.TextFlow;
 
 /**
@@ -74,8 +76,17 @@ public class Controleur {
 
     /**
      *
+     * @param user
+     * @param factory
      */
+    public void setScoringStrategy(final User user, final ScoringStrategyFactory factory) {
+        ScoringStrategy strategy = factory.createStrategy();
+        model.setScoringStrategy(user, strategy);
+    }
 
+    /**
+     *
+     */
     public void sortMessages() {
         model.sortMessages();
     }
@@ -83,7 +94,6 @@ public class Controleur {
     /**
      * Create an example set of users and messages, for testing.
      */
-
     public void createExampleMessages() {
         //model.createExampleMessages();
     }

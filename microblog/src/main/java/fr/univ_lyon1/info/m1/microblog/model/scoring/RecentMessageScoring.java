@@ -1,4 +1,7 @@
-package fr.univ_lyon1.info.m1.microblog.model;
+package fr.univ_lyon1.info.m1.microblog.model.scoring;
+
+import fr.univ_lyon1.info.m1.microblog.model.Message;
+import fr.univ_lyon1.info.m1.microblog.model.MessageData;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import fr.univ_lyon1.info.m1.microblog.model.scoring.BookmarkScoring;
 import org.junit.jupiter.api.Test;
 
 /**

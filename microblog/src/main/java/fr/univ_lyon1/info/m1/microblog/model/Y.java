@@ -1,5 +1,7 @@
 package fr.univ_lyon1.info.m1.microblog.model;
 
+import fr.univ_lyon1.info.m1.microblog.model.scoring.BookmarkScoring;
+import fr.univ_lyon1.info.m1.microblog.model.scoring.ScoringStrategy;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -97,7 +99,7 @@ public class Y extends Observable {
      */
     public void setScoringStrategy(final User user, final ScoringStrategy selectedStrategy) {
         userScoringStrategies.put(user, selectedStrategy);
-        System.out.println("Stratégie de scoring modifiée pour " + user.getId());
+        //System.out.println("Stratégie modifiée pour " + user.getId() + " : " + selectedStrategy);
     }
 
     /**
