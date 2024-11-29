@@ -1,5 +1,8 @@
 package fr.univ_lyon1.info.m1.microblog.model;
 
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
+
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -7,7 +10,7 @@ import java.text.SimpleDateFormat;
 /**
  * Class representing a message.
  */
-public final class Message {
+public class Message {
     private String content;
     private final Date date;
     private final SimpleDateFormat dateFormat;
@@ -18,7 +21,7 @@ public final class Message {
      *
      * @param builder the builder to create the message
      */
-    private Message(final Builder builder) {
+    protected Message(final Builder builder) {
         this.content = builder.content;
         this.date = builder.date;
         this.dateFormat = builder.dateFormat;
@@ -36,6 +39,16 @@ public final class Message {
 
     public LocalDateTime getTimestamp() {
         return timestamp;
+    }
+
+    /**
+     * Get the text flow of the message.
+     *
+     * @return the text flow
+     */
+    public TextFlow getTextFlow() {
+
+        return new TextFlow(new Text(content));
     }
 
     /**

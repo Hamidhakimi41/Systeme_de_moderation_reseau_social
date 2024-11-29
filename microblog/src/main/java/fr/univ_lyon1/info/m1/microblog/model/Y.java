@@ -1,5 +1,8 @@
 package fr.univ_lyon1.info.m1.microblog.model;
 
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
+
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -39,16 +42,16 @@ public class Y extends Observable {
     /**
      * Create an example set of users and messages, for testing (not any longuer used) .
      */
-    public void createExampleMessages() {
-        User foo = createUser("foo");
-        User bar = createUser("bar");
-        add(foo, "salut tout le monde");
-        add(bar, "Hello les masters");
-        add(foo, "GL c'est cool");
-        add(bar, "les etudes sans dure");
-
-        // Calculer les scores des messages après leur création
-        sortMessages();
+   public void createExampleMessages() {
+//        User foo = createUser("foo");
+//        User bar = createUser("bar");
+//        add(foo, "salut tout le monde");
+//        add(bar, "Hello les masters");
+//        add(foo, "GL c'est cool");
+//        add(bar, "les etudes sans dure");
+//
+//        // Calculer les scores des messages après leur création
+//        sortMessages();
     }
 
     /** Get the users in the registry. */
@@ -58,32 +61,39 @@ public class Y extends Observable {
 
 
     /** Post a message, with observer notification. **/
-    public void add(final User user, final String text) {
-        // Créer une seule instance de Message pour tous les utilisateurs
-        Message message = new Message.Builder(text).build();
-
-        // Ajouter le même message pour tous les  utilisateurs
-        for (User u : users) {
-
-                if (usersMessages.get(u) != null) {
-                    usersMessages.get(u).put(message, new MessageData());
-                } else {
-                    LinkedHashMap<Message, MessageData> l = new LinkedHashMap<>();
-                    l.put(message, new MessageData());
-                    usersMessages.put(u, l);
-                }
+    public void add(final User user, final TextFlow textFlow) {
+        // Convert TextFlow to a string representation if needed
+        StringBuilder contentBuilder = new StringBuilder();
+        textFlow.getChildren().forEach(node -> {
+            if (node instanceof Text) {
+                contentBuilder.append(((Text) node).getText());
             }
+        });
+        String content = contentBuilder.toString();
 
-        // Calculer les scores des messages après l'ajout d'un nouveau message
+        // Create a single instance of Message for all users
+        Message message = new Message.Builder(content).build();
+
+        // Add the same message for all users
+        for (User u : users) {
+            if (usersMessages.get(u) != null) {
+                usersMessages.get(u).put(message, new MessageData());
+            } else {
+                LinkedHashMap<Message, MessageData> l = new LinkedHashMap<>();
+                l.put(message, new MessageData());
+                usersMessages.put(u, l);
+            }
+        }
+
+        // Calculate message scores after adding a new message
         sortMessages();
 
-        // Notifier les observateurs que l'utilisateur a ajouté un message
+        // Notify observers that the user has added a message
         setChanged();
         notifyObservers(user);
     }
-
     /**
-     * Modifier la stratégie de scoring pour un utilisateur donné.
+     * update the strategy of scoring for a user .
      */
     public void setScoringStrategy(final User user, final ScoringStrategy selectedStrategy) {
         userScoringStrategies.put(user, selectedStrategy);

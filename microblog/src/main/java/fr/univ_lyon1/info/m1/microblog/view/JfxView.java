@@ -16,6 +16,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
@@ -24,13 +26,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 import fr.univ_lyon1.info.m1.microblog.model.BookmarkScoring;
 import fr.univ_lyon1.info.m1.microblog.model.ForbiddenWordsScoring;
 import fr.univ_lyon1.info.m1.microblog.model.RecentMessageScoring;
 import fr.univ_lyon1.info.m1.microblog.model.ScoringStrategy;
-import javafx.scene.control.ComboBox;
 
 /**
  * Main class of the View (GUI) of the application.
@@ -65,6 +68,7 @@ public class JfxView implements Observer {
         stage.setScene(scene);
         stage.show();
     }
+
     /**
      * Create the pane containing all user's, from the users' registry contained in the model.
      */
@@ -80,7 +84,7 @@ public class JfxView implements Observer {
             VBox userMsgBox = new VBox();
             Label userID = new Label(u.getId());
 
-            // ComboBox for selecting the scoring strategy for each user
+            // ComboBox pour la sélection de la stratégie de scoring
             ComboBox<ScoringStrategy> userStrategyComboBox = new ComboBox<>();
             userStrategyComboBox.setPromptText("Select scoring strategy :");
             userStrategyComboBox.getItems().addAll(
@@ -89,10 +93,10 @@ public class JfxView implements Observer {
                     new ForbiddenWordsScoring()
             );
 
-            // Default display text to show selected strategy
+            // Label pour afficher la stratégie sélectionnée
             Label selectedStrategyLabel = new Label("");
 
-            // On strategy selection, update the label and apply the strategy
+            // Gestion de la sélection de la stratégie de scoring
             userStrategyComboBox.setOnAction(event -> {
                 ScoringStrategy selectedStrategy =
                         userStrategyComboBox.getSelectionModel().getSelectedItem();
@@ -144,6 +148,14 @@ public class JfxView implements Observer {
             + "-fx-margin: 5px; ";
 
 
+    /**
+     * Create a message widget.
+     *
+     * @param m the message
+     * @param d the message data
+     * @param user the user
+     * @return the VBox containing the message
+     */
     private VBox createMessageWidget(final Message m, final MessageData d, final User user) {
         VBox msgBox = new VBox();
 
@@ -161,42 +173,108 @@ public class JfxView implements Observer {
         // Bouton de suppression
         Button deleteButton = new Button(" ❌ ");
         deleteButton.setOnAction(e -> {
-            controller.getModel().deleteMessage(m);
+            controller.getModel().deleteMessage(m); // On passe l'action de suppression au modèle
             controller.sortMessages();
         });
 
         buttonBox.getChildren().addAll(bookButton, deleteButton);   // Ajout des boutons
         msgBox.getChildren().add(buttonBox); // Ajout de la HBox contenant les boutons
 
-        Label label = new Label(m.getContent());
-        msgBox.getChildren().add(label);
+        // Création du TextFlow pour le contenu du message
+        TextFlow textFlow = new TextFlow();
+        String content = m.getContent();
+        String[] words = content.split(" ");    // Séparer les mots du contenu
+        boolean newLineAdded = false;
+        for (String word : words) {
+            Text text = new Text(word + " ");
+            text.setStyle("-fx-font-weight: bold;");
+
+            // Vérifier si le mot est un tag ou une mention
+            if (word.startsWith("@")) {
+                if (!newLineAdded) {
+                    textFlow.getChildren().add(new Text("\n"));
+                    newLineAdded = true;
+                }
+                text.setStyle("-fx-fill: #21A90DFF; -fx-font-weight: bold;");
+            } else if (word.startsWith("#")) {
+                if (!newLineAdded) {
+                    textFlow.getChildren().add(new Text("\n"));
+                    newLineAdded = true;
+                }
+                text.setStyle("-fx-fill: blue; -fx-underline: true;");
+            }
+            textFlow.getChildren().add(text);   // Ajout du mot au TextFlow
+        }
+        msgBox.getChildren().add(textFlow); // Ajout du TextFlow au VBox
+
+        // Ajout de la date du message
         Label dateLabel = new Label(m.getDate());
         dateLabel.setTextFill(Color.RED);
         msgBox.getChildren().add(dateLabel);
+
+        // Ajout du score du message
         Label score = new Label("Score: " + d.getScore());
         score.setTextFill(Color.LIGHTGRAY);
         msgBox.getChildren().add(score);
         msgBox.setStyle(MSG_STYLE);
         return msgBox;
     }
+
+    /**
+     * Create the input widget for the user.
+     *
+     * @param u the user
+     * @return the input widget
+     */
     private Pane createInputWidget(final User u) {
-        final Pane input = new HBox();
+        final VBox input = new VBox(5);
         TextArea t = new TextArea();
-        t.setMaxSize(200, 150);
+        t.setMaxSize(300, 150);
+
+        // Champ de saisie pour les tags
+        TextField tagField = new TextField();
+        tagField.setPromptText("Ajouter un tag : fyp, gaming");
+
+        // Champ de saisie pour les mentions
+        TextField mentionField = new TextField();
+        mentionField.setPromptText("Ajouter une mention : everyone, anonyme");
+
+        // Gestion de l'envoi du message avec les touches Ctrl + Enter
         t.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER && e.isControlDown()) {
-                controller.publishMessage(u, t.getText());
+                publishMessageWithDecorators(
+                        u, t.getText(), tagField.getText(), mentionField.getText());
                 t.clear();
+                tagField.clear();
+                mentionField.clear();
             }
         });
-        Button s = new Button("Publish");
-        s.setOnAction(e -> {
-            controller.publishMessage(u, t.getText());
-            controller.sortMessages(); // On trie les messages après un ajout
+
+        Button submit = new Button("Publish");
+        submit.setOnAction(e -> {
+            publishMessageWithDecorators(
+                    u, t.getText(), tagField.getText(), mentionField.getText());
             t.clear();
+            tagField.clear();
+            mentionField.clear();
         });
-        input.getChildren().addAll(t, s);
+
+        // Ajout des éléments à la boîte de saisie
+        input.getChildren().addAll(tagField, mentionField, t, submit);
         return input;
+    }
+
+    /**
+     * Publish a message with decorators.
+     *
+     * @param u the user
+     * @param text the text
+     * @param tags the tags
+     * @param mentions the mentions
+     */
+    private void publishMessageWithDecorators(
+            final User u, final String text, final String tags, final String mentions) {
+        controller.publishMessageWithDecorators(u, text, tags, mentions);
     }
 
     @Override

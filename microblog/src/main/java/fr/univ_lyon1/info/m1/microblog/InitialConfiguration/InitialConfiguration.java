@@ -2,6 +2,8 @@ package fr.univ_lyon1.info.m1.microblog.InitialConfiguration;
 
 import com.google.gson.Gson;
 import fr.univ_lyon1.info.m1.microblog.model.Y;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
@@ -42,15 +44,15 @@ public final class InitialConfiguration {
                 Gson gson = new Gson();
                 Config config = gson.fromJson(reader, Config.class);
 
-                //System.out.println("Number of users loaded: " + config.users.size());
                 for (UserConfig userConfig : config.users) {
-                    //System.out.println("Creating user with ID: " + userConfig.id);
                     y.createUser(userConfig.id);
                 }
 
                 for (UserConfig userConfig : config.users) {
                     for (String message : userConfig.messages) {
-                        y.add(null, message); // Add message to all users
+                        // Convertir le message en TextFlow
+                        TextFlow textFlow = new TextFlow(new Text(message));
+                        y.add(null, textFlow); // Ajouter le message à tous les utilisateurs
                     }
                 }
             }
