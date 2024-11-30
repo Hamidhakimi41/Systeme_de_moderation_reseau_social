@@ -28,7 +28,7 @@ public class App extends Application {
 
         // Create the controller and the main view
         Controleur controleur = new Controleur(y);
-        JfxView v = new JfxView(controleur, stage, 600, 600);
+        JfxView v = new JfxView(controleur, stage, 650, 750);
         y.addObserver(v);
 
         // Second view (uncomment to activate)
