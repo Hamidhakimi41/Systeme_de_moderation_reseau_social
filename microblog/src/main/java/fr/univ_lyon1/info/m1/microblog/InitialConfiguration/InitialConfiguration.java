@@ -1,6 +1,8 @@
 package fr.univ_lyon1.info.m1.microblog.InitialConfiguration;
 
 import com.google.gson.Gson;
+import fr.univ_lyon1.info.m1.microblog.model.Message;
+import fr.univ_lyon1.info.m1.microblog.model.User;
 import fr.univ_lyon1.info.m1.microblog.model.Y;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -49,10 +51,13 @@ public final class InitialConfiguration {
                 }
 
                 for (UserConfig userConfig : config.users) {
-                    for (String message : userConfig.messages) {
-                        // Convertir le message en TextFlow
-                        TextFlow textFlow = new TextFlow(new Text(message));
-                        y.add(null, textFlow); // Ajouter le message à tous les utilisateurs
+                    User owner = y.getUserById(userConfig.id); // Retrieve the user by ID
+                    for (String messageContent : userConfig.messages) {
+                        Message message = new Message.Builder(messageContent)
+                                .owner(owner)
+                                .build();
+                        TextFlow textFlow = new TextFlow(new Text(message.getContent()));
+                        y.add(owner, textFlow); // Add the message with the owner
                     }
                 }
             }
@@ -82,8 +87,6 @@ public final class InitialConfiguration {
      */
     private static final class UserConfig {
         private String id;
-
-
         private List<String> messages;
 
         public void setId(final String id) {

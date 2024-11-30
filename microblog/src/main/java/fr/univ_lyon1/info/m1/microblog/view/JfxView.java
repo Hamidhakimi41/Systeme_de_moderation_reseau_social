@@ -23,12 +23,13 @@ import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -75,7 +76,6 @@ public class JfxView implements Observer {
     /**
      * Create the pane containing all user's, from the users' registry contained in the model.
      */
-
     private void createUsersPanes() {
         users.getChildren().clear();
         for (User u : controller.getModel().getUsers()) {
@@ -103,7 +103,7 @@ public class JfxView implements Observer {
             // Label pour afficher la stratégie sélectionnée
             Label selectedStrategyLabel = new Label("");
 
-            /// Gestion de la sélection de la stratégie de scoring
+            // Gestion de la sélection de la stratégie de scoring
             userStrategyComboBox.setOnAction(event -> {
                 String selectedStrategyName =
                         userStrategyComboBox.getSelectionModel().getSelectedItem();
@@ -182,15 +182,30 @@ public class JfxView implements Observer {
             controller.sortMessages(); // On trie les messages après un changement de bookmark
         });
 
+
         // Bouton de suppression
         Button deleteButton = new Button(" ❌ ");
         deleteButton.setOnAction(e -> {
-            controller.getModel().deleteMessage(m); // On passe l'action de suppression au modèle
-            controller.sortMessages();
+            if (m.getOwner().equals(user)) {
+                // On passe l'action de suppression au modèle
+                controller.getModel().deleteMessage(m);
+                controller.sortMessages();
+            } else {
+                showAlert(
+                        "Impossible de supprimer ce message, vous n'en êtes pas le propriétaire!");
+            }
         });
+
+        // Désactiver le btn sup si l'utilisateur n'est pas le propriétaire
+        //deleteButton.setDisable(!m.getOwner().equals(user));
 
         buttonBox.getChildren().addAll(bookButton, deleteButton);   // Ajout des boutons
         msgBox.getChildren().add(buttonBox); // Ajout de la HBox contenant les boutons
+
+        // Ajout du propriétaire du message
+        Label ownerLabel = new Label("Owner: " + m.getOwner().getId());
+        ownerLabel.setTextFill(Color.LIGHTGRAY);
+        msgBox.getChildren().add(ownerLabel);
 
         // Création du TextFlow pour le contenu du message
         TextFlow textFlow = new TextFlow();
@@ -249,7 +264,7 @@ public class JfxView implements Observer {
 
         // Champ de saisie pour les mentions
         TextField mentionField = new TextField();
-        mentionField.setPromptText("Ajouter une mention : everyone, anonyme");
+        mentionField.setPromptText("Ajouter une mention : Everyone, Alice");
 
         // Gestion de l'envoi du message avec les touches Ctrl + Enter
         t.setOnKeyPressed(e -> {
@@ -289,6 +304,12 @@ public class JfxView implements Observer {
         controller.publishMessageWithDecorators(u, text, tags, mentions);
     }
 
+    /**
+     * Update the view.
+     *
+     * @param o the observable
+     * @param arg the argument
+     */
     @Override
     public void update(final Observable o, final Object arg) {
         //System.out.println("changement");
@@ -301,6 +322,12 @@ public class JfxView implements Observer {
             Platform.runLater(this::refresh);
         }
     }
+
+    /**
+     * Update the user pane.
+     *
+     * @param user the user
+     */
     private void updateUserPane(final User user) {
         VBox userMessageBox = getUserMessageBox(user);
         if (userMessageBox != null) {
@@ -324,15 +351,32 @@ public class JfxView implements Observer {
                     + "l'utilisateur : " + user.getId());
         }
     }
+
+
     private  void afficheTous() {
         for (User u:controller.getModel().getUsers()) {
             updateUserPane(u);
         }
     }
+
+
     private void refresh() {
         users.getChildren().clear();
         createUsersPanes();
         afficheTous();
+    }
+
+    /**
+     * Show an alert.
+     *
+     * @param message the message
+     */
+    private void showAlert(final String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Permission Denied");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
 

@@ -43,7 +43,7 @@ public class Controleur {
      */
     public void publishMessageWithDecorators(
             final User u, final String text, final String tags, final String mentions) {
-        Message message = new Message.Builder(text).build();
+        Message message = new Message.Builder(text).owner(u).build();
 
         // Ajout des mentions en utilisant le décorateur
         if (!mentions.isEmpty()) {

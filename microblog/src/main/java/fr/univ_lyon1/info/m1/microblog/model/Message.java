@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
  */
 public class Message {
     private String content;
+    private final User owner;
     private final Date date;
     private final SimpleDateFormat dateFormat;
     private final LocalDateTime timestamp;
@@ -26,6 +27,7 @@ public class Message {
         this.date = builder.date;
         this.dateFormat = builder.dateFormat;
         this.timestamp = builder.timestamp;
+        this.owner = builder.owner;
     }
 
 
@@ -52,10 +54,21 @@ public class Message {
     }
 
     /**
+     * Get the owner of the message.
+     *
+     * @return the owner
+     */
+    public User getOwner() {
+        return owner;
+    }
+
+    //--------------------------------------------------------------------------------
+    /**
      * Builder class for the Message class.
      */
     public static class Builder {
         private String content;
+        private User owner;
         private Date date;
         private SimpleDateFormat dateFormat;
         private LocalDateTime timestamp;
@@ -73,6 +86,17 @@ public class Message {
         }
 
         /**
+         * Set the owner of the message.
+         *
+         * @param owner the owner of the message
+         * @return the builder
+         */
+        public Builder owner(final User owner) {
+            this.owner = owner;
+            return this;
+        }
+
+        /**
          * Build the message.
          *
          * @return the message
@@ -80,5 +104,6 @@ public class Message {
         public Message build() {
             return new Message(this);
         }
+
     }
 }

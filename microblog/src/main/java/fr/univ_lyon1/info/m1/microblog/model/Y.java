@@ -74,7 +74,7 @@ public class Y extends Observable {
         String content = contentBuilder.toString();
 
         // Create a single instance of Message for all users
-        Message message = new Message.Builder(content).build();
+        Message message = new Message.Builder(content).owner(user).build();
 
         // Add the same message for all users
         for (User u : users) {
@@ -203,4 +203,18 @@ public class Y extends Observable {
         notifyObservers();
     }
 
+    /**
+     * Récupérer un utilisateur par son ID.
+     * @param id
+     * @return
+     */
+    public User getUserById(final String id) {
+        for (User u : users) {
+            if (u.getId().equals(id)) {
+                //System.out.println("User trouvé : " + u.getId());
+                return u;
+            }
+        }
+        return null;
+    }
 }
