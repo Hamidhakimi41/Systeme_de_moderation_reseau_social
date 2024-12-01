@@ -4,6 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 public class CharManipulatorTest {
 
     private CharManipulator manipulator;
@@ -36,5 +39,28 @@ public class CharManipulatorTest {
     public void caseEmptyString() {
         assertEquals("", manipulator.invertCase(""));
     }
+
+        @Test
+        public void testAbcd() {
+            // Given
+            CharManipulator manipulator = new CharManipulator();
+
+            // When
+            String invert = manipulator.invertOrder("ABCD");
+
+            // Then
+            assertThat( invert,is("DCBA"));
+        }
+
+    @Test
+    public void testRemovePattern() {
+        assertEquals("cc", manipulator.removePattern("coucou", "ou"));
+        assertEquals("coucou", manipulator.removePattern("coucou", ""));
+        assertEquals("", manipulator.removePattern("ab", "ab"));
+
+
+    }
+
+
 
 }
