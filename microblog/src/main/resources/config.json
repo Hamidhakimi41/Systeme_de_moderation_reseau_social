@@ -1,0 +1,18 @@
+{
+  "users": [
+    {
+      "id": "Amine",
+      "messages": [
+        "salut tout le monde",
+        "GL c'est cool"
+      ]
+    },
+    {
+      "id": "Hamid",
+      "messages": [
+        "Hello les masters",
+        "les etudes sans dure"
+      ]
+    }
+  ]
+}
