@@ -142,7 +142,13 @@ public class Y extends Observable {
     public LinkedHashMap<Message, MessageData> getMessageList(final User u) {
          return  usersMessages.get(u);
     }
-    private void  setMessageList(final LinkedHashMap<Message, MessageData> messages, final User u) {
+
+    /**
+     * .
+     * @param messages
+     * @param u
+     */
+    public void  setMessageList(final LinkedHashMap<Message, MessageData> messages, final User u) {
         usersMessages.put(u, messages);
     }
 
@@ -217,4 +223,20 @@ public class Y extends Observable {
         }
         return null;
     }
+
+    /**
+     * .
+     * @return
+     */
+    public LinkedHashMap<User, LinkedHashMap<Message, MessageData>> getMessages() {
+        return usersMessages;
+    }
+    /**
+     * .
+     */
+    public Map<User, ScoringStrategy> getUserScoringStrategies() {
+        return userScoringStrategies;
+    }
+
+
 }

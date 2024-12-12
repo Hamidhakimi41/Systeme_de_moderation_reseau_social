@@ -104,6 +104,15 @@ public class Message {
         public Message build() {
             return new Message(this);
         }
+        /**
+         * mise à jour du date.
+         * @param
+         * @return the builder
+         */
+        public Builder setTime(final  LocalDateTime time) {
+            this.timestamp = time;
+            return  this;
+        }
 
     }
 }
