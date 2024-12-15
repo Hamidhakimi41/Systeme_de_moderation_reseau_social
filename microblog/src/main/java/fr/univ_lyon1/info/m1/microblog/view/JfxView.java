@@ -37,6 +37,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.StackPane;
 
 /**
  * Main class of the View (GUI) of the application.
@@ -61,14 +63,15 @@ public class JfxView implements Observer {
         // Create the root layout
         final VBox root = new VBox(10);
         root.setPadding(new Insets(10));
-        root.setStyle("-fx-background-color: #f0f0f0;");
+
+        // Apply default theme
+        root.getStylesheets().add(getClass().getResource(
+                "/default-theme.css").toExternalForm());
 
         // Create the user container
         users = new HBox(10);
-        users.setPadding(new Insets(10));
-        users.setStyle(
-                "-fx-background-color: #ffffff; -fx-border-color: #cccccc; -fx-border-width: 1px;");
         VBox.setVgrow(users, Priority.ALWAYS);
+        users.setPadding(new Insets(10));
         root.getChildren().add(users);
 
         // Create the users panes
@@ -78,6 +81,31 @@ public class JfxView implements Observer {
         // Create the scene
         final Scene scene = new Scene(root, width, height);
         stage.setScene(scene);
+
+        // Add theme switcher button
+        ToggleButton themeSwitcher = new ToggleButton("Dark Mode");
+        themeSwitcher.setOnAction(e -> {
+            scene.getStylesheets().clear(); // Supprime toutes les feuilles actuelles
+            if (themeSwitcher.isSelected()) {
+                scene.getStylesheets().add(getClass().getResource(
+                        "/dark-theme.css").toExternalForm());
+                themeSwitcher.setText("Light Mode");
+            } else {
+                scene.getStylesheets().add(getClass().getResource(
+                        "/default-theme.css").toExternalForm());
+                themeSwitcher.setText("Dark Mode");
+            }
+        });
+
+        themeSwitcher.getStyleClass().add("button");
+
+        // Add the theme switcher to the root layout
+        StackPane switcherPane = new StackPane(themeSwitcher);
+        switcherPane.setAlignment(Pos.TOP_RIGHT);
+        switcherPane.getStyleClass().add("stack-pane");
+
+        root.getChildren().add(switcherPane);
+
         stage.show();
     }
 
@@ -89,16 +117,13 @@ public class JfxView implements Observer {
         for (User u : controller.getModel().getUsers()) {
             VBox userBox = new VBox(10);
             userBox.setPadding(new Insets(10));
-            userBox.setStyle(""
-                    + "-fx-background-color: #ffffff; "
-                    + "-fx-border-color: #cccccc; "
-                    + "-fx-border-width: 1px;"
-            );
+            userBox.getStyleClass().add("vbox");
+
             userBox.setMinWidth(300);
             userBox.setMaxWidth(300);
 
             Label userID = new Label(u.getId());
-            userID.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+            userID.getStyleClass().add("label");
 
             // Scoring strategies
             Map<String, ScoringStrategyFactory> strategyFactories = new HashMap<>();
@@ -109,6 +134,7 @@ public class JfxView implements Observer {
             ComboBox<String> userStrategyComboBox = new ComboBox<>();
             userStrategyComboBox.setPromptText("Select scoring strategy:");
             userStrategyComboBox.getItems().addAll(strategyFactories.keySet());
+            userStrategyComboBox.getStyleClass().add("combo-box");
 
             Label selectedStrategyLabel = new Label("");
             userStrategyComboBox.setOnAction(event -> {
@@ -125,16 +151,14 @@ public class JfxView implements Observer {
             });
 
             VBox userMsgBox = new VBox(10);
-            userMsgBox.setStyle(
-                    "-fx-background-color: #f9f9f9; "
-                            + "-fx-border-color: #dddddd; "
-                            + "-fx-border-width: 1px; "
-                            + "-fx-padding: 10px;"
-            );
+            userMsgBox.getStyleClass().add("vbox");
+
             ScrollPane scrollPane = new ScrollPane(userMsgBox);
             scrollPane.setFitToWidth(true);
+            scrollPane.getStyleClass().add("scroll-pane");
 
             Pane textBox = createInputWidget(u);
+            textBox.getStyleClass().add("vbox");
 
             VBox.setVgrow(scrollPane, Priority.ALWAYS);
             userBox.getChildren().addAll(
@@ -165,13 +189,6 @@ public class JfxView implements Observer {
         return null;
     }
 
-    static final String MSG_STYLE = "-fx-background-color: white; "
-            + "-fx-border-color: black; -fx-border-width: 1;"
-            + "-fx-border-radius: 10px;"
-            + "-fx-background-radius: 10px;"
-            + "-fx-padding: 8px; "
-            + "-fx-margin: 5px; ";
-
     /**
      * Create a message widget.
      *
@@ -180,9 +197,10 @@ public class JfxView implements Observer {
      * @param user the user
      * @return the VBox containing the message
      */
-    private VBox createMessageWidget(final Message m, final MessageData d, final User user) {
+    private VBox createMessageWidget(
+            final Message m, final MessageData d, final User user) {
         VBox msgBox = new VBox(5);
-        msgBox.setStyle(MSG_STYLE);
+        msgBox.getStyleClass().add("msg-box");
 
         // Ajout des boutons pour les actions (bookmark, delete)
         HBox buttonBox = new HBox(5);
@@ -190,12 +208,14 @@ public class JfxView implements Observer {
 
         String bookmarkText = d.isBookmarked() ? " ★ " : " ☆ ";
         Button bookButton = new Button(bookmarkText);
+        bookButton.getStyleClass().add("button");
         bookButton.setOnAction(e -> {
             controller.bookmarkMessage(m, user);
             controller.sortMessages();
         });
 
         Button deleteButton = new Button(" ❌ ");
+        deleteButton.getStyleClass().add("button");
         deleteButton.setOnAction(e -> {
             if (m.getOwner().equals(user)) {
                 controller.getModel().deleteMessage(m);
@@ -221,20 +241,20 @@ public class JfxView implements Observer {
         boolean newLineAdded = false;
         for (String word : words) {
             Text text = new Text(word + " ");
-            text.setStyle("-fx-font-weight: bold;");
+            //text.getStyleClass().add("text-flow");
 
             if (word.startsWith("@")) {
                 if (!newLineAdded) {
                     textFlow.getChildren().add(new Text("\n"));
                     newLineAdded = true;
                 }
-                text.setStyle("-fx-fill: #21A90DFF; -fx-font-weight: bold;");
+                text.getStyleClass().add("mention");
             } else if (word.startsWith("#")) {
                 if (!newLineAdded) {
                     textFlow.getChildren().add(new Text("\n"));
                     newLineAdded = true;
                 }
-                text.setStyle("-fx-fill: blue; -fx-underline: true;");
+                text.getStyleClass().add("tag");
             }
             textFlow.getChildren().add(text);
         }
@@ -242,7 +262,7 @@ public class JfxView implements Observer {
 
         // Ajout de la date et du score
         Label dateLabel = new Label(m.getDate());
-        dateLabel.setTextFill(Color.RED);
+        dateLabel.getStyleClass().add("date-label");
         msgBox.getChildren().add(dateLabel);
 
         Label score = new Label("Score: " + d.getScore());
@@ -261,18 +281,20 @@ public class JfxView implements Observer {
     private Pane createInputWidget(final User u) {
         final VBox input = new VBox(5);
         input.setPadding(new Insets(10));
-        input.setStyle(
-                "-fx-background-color: #ffffff; -fx-border-color: #cccccc; -fx-border-width: 1px;");
+        input.getStyleClass().add("vbox");
 
         TextArea t = new TextArea();
         t.setMaxSize(300, 150);
+        t.getStyleClass().add("text-area");
 
         // Ajout des champs pour les tags et les mentions
         TextField tagField = new TextField();
         tagField.setPromptText("Ajouter un tag : fyp, gaming");
+        tagField.getStyleClass().add("text-field");
 
         TextField mentionField = new TextField();
         mentionField.setPromptText("Ajouter une mention : Everyone, Alice");
+        mentionField.getStyleClass().add("text-field");
 
         // Gestion de l'envoi du message
         t.setOnKeyPressed(e -> {
@@ -286,6 +308,7 @@ public class JfxView implements Observer {
         });
 
         Button submit = new Button("Publish");
+        submit.getStyleClass().add("button");
         submit.setOnAction(e -> {
             publishMessageWithDecorators(
                     u, t.getText(), tagField.getText(), mentionField.getText());

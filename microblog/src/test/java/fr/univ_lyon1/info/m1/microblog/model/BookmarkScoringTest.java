@@ -16,7 +16,7 @@ public class BookmarkScoringTest {
     private BookmarkScoring bookmarkScoring;
     private Map<Message, MessageData> messagesData;
     /**
-     * .
+     * avant chaque test.
      */
     @BeforeEach
     void setUp() {
@@ -25,7 +25,7 @@ public class BookmarkScoringTest {
     }
 
     /**
-     * .
+     * cree un message avec un contenu et un proprietaire.
      * @param content
      * @param owner
      * @return
@@ -35,7 +35,7 @@ public class BookmarkScoringTest {
         return new Message.Builder(content).owner(owner).build();
     }
     /**
-     * .
+     * test de la methode computeScores avec un seul mot bookmarke.
      */
     @Test
     void testComputeScoresWithSingleBookmarkedWord() {
@@ -58,7 +58,7 @@ public class BookmarkScoringTest {
         assertEquals(1, data2.getScore()); // +1 non marke et word en commun
     }
     /**
-     * .
+     * test de la methode computeScores avec plusieurs mots bookmarke.
      */
     @Test
     void testComputeScoresWithMultipleBookmarkedMessages() {
@@ -87,7 +87,7 @@ public class BookmarkScoringTest {
         assertEquals(1, data3.getScore());
     }
     /**
-     * .
+     * test de la methode computeScores avec aucun mot bookmarke.
      */
     @Test
     void testComputeScoresWithNoBookmarkedWords() {
@@ -101,13 +101,46 @@ public class BookmarkScoringTest {
 
         assertEquals(0, data1.getScore());
     }
+
     /**
-     * .
+     * test de la methode computeScores avec un message vide.
+     */
+    @Test
+    void testComputeScoresWithEmptyMessage() {
+        User user = new User("empty");
+        Message message = createMessage("", user);
+        MessageData data = new MessageData();
+        data.setBookmarked(true);
+
+        messagesData.put(message, data);
+
+        bookmarkScoring.computeScores(messagesData);
+
+        assertEquals(0, data.getScore());
+    }
+
+    /**
+     * test de la methode computeScores avec des caracteres speciaux.
+     */
+    @Test
+    void testComputeScoresWithSpecialCharacters() {
+        User user = new User("special");
+        Message message = createMessage("Hello, world! 123", user);
+        MessageData data = new MessageData();
+        data.setBookmarked(true);
+
+        messagesData.put(message, data);
+
+        bookmarkScoring.computeScores(messagesData);
+
+        assertEquals(2, data.getScore()); // "hello" et "world" sont les seuls mots alphabétiques
+    }
+
+    /**
+     * test toString.
      */
     @Test
     void testToString() {
         assertEquals("Messages, ordre chronologique(pertinents)", bookmarkScoring.toString());
     }
-
-
 }

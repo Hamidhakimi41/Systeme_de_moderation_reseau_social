@@ -12,7 +12,7 @@ public class MessageData {
      * Represents the data associated with a message.
      */
     private boolean isBookmarked = false;
-    private int score = -1;
+    private int score = 0;
     private Set<String> words = new HashSet<>();
 
 
@@ -83,12 +83,18 @@ public class MessageData {
                     return -1;
                 } else if (isBookmarked() && !isBookmarked()) {
                     return 1;
-
                 } else {
-                    return 0;
+                    int scoreLeft = getScore();
+                    int scoreRight = rightData.getScore();
+                    if (scoreLeft < scoreRight) {
+                        return -1;
+                    } else if (scoreLeft == scoreRight) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
                 }
-
-            } else {
+            } else { // aucun est en favors
                 int scoreLeft = getScore();
                 int scoreRight = rightData.getScore();
                 if (scoreLeft < scoreRight) {

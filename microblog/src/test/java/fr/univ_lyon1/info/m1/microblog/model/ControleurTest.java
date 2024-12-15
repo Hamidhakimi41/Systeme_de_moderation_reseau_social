@@ -12,14 +12,13 @@ import org.junit.jupiter.api.Test;
 import java.util.LinkedHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
- * .
+ * Tests unitaires pour la classe Controleur.
  */
 
 class ControleurTest {
@@ -31,12 +30,13 @@ class ControleurTest {
      */
     @BeforeEach
     public void setUp() {
-        model = new Y(); // Utilisation d'une implémentation concrète
+        Y.resetInstance(); // réinitialisation du modèle singleton
+        model = Y.getInstance(); // initialisation du modèle singleton
         controleur = new Controleur(model);
     }
 
     /**
-     * .
+     * test de la publication d'un message.
      */
     @Test
     public void testPublishMessage() {
@@ -57,7 +57,7 @@ class ControleurTest {
     }
 
     /**
-     * .
+     * test de la publication d'un message avec décorateurs.
      */
     @Test
     public void testPublishMessageWithDecorators() {
@@ -80,7 +80,7 @@ class ControleurTest {
     }
 
     /**
-     * .
+     * test de la publication d'un message avec bookmarks.
      */
     @Test
     public void testBookmarkMessage() {
@@ -104,7 +104,7 @@ class ControleurTest {
     }
 
     /**
-     * .
+     * test de la mise à jour de la stratégie de scoring.
      */
     @Test
     public void testSetScoringStrategy() {
@@ -121,7 +121,7 @@ class ControleurTest {
 
 
     /**
-     * .
+     * test de tri des messages.
      */
     @Test
     public void testSortMessages() {
@@ -141,5 +141,75 @@ class ControleurTest {
 
         // Vérifiez qu'il y a 2 messages
         assertEquals(2, messages.size());
+    }
+
+    // Tests de cas limites et erreurs
+
+    /**
+     * test de la publication d'un message avec un utilisateur null.
+     */
+    @Test
+    public void testPublishMessageWithNullUser() {
+        TextFlow textFlow = new TextFlow(new Text("Hello world!"));
+        assertThrows(NullPointerException.class, () -> controleur.publishMessage(null, textFlow));
+    }
+
+    /**
+     * test de la publication d'un message avec un TextFlow null.
+     */
+    @Test
+    public void testPublishMessageWithNullTextFlow() {
+        User user = model.createUser("TestUser");
+        assertThrows(NullPointerException.class, () -> controleur.publishMessage(user, null));
+    }
+
+    /**
+     * test de la publication d'un message sans tags ni mentions.
+     */
+    @Test
+    public void testPublishMessageWithDecoratorsEmptyStrings() {
+        User user = model.createUser("TestUser");
+        String text = "Hello, mention!";
+        String tags = "";
+        String mentions = "";
+
+        controleur.publishMessageWithDecorators(user, text, tags, mentions);
+
+        LinkedHashMap<Message, MessageData> messages = model.getMessageList(user);
+        assertNotNull(messages);
+        assertEquals(1, messages.size());
+
+        Message message = messages.keySet().iterator().next();
+        assertFalse(message.getContent().contains("#"));
+        assertFalse(message.getContent().contains("@"));
+        assertEquals(user, message.getOwner());
+    }
+
+    /**
+     * test de bookmark d'un message avec un message null.
+     */
+    @Test
+    public void testBookmarkMessageWithNullMessage() {
+        User user = model.createUser("TestUser");
+        assertThrows(NullPointerException.class, () -> controleur.bookmarkMessage(null, user));
+    }
+
+    /**
+     * test de scorage d'un message avec un utilisateur null.
+     */
+    @Test
+    public void testSetScoringStrategyWithNullUser() {
+        ScoringStrategy strategy = new BookmarkScoring();
+        assertThrows(NullPointerException.class,
+                () -> controleur.setScoringStrategy(null, () -> strategy));
+    }
+
+    /**
+     * test de scorage d'un message avec une stratégie null.
+     */
+    @Test
+    public void testSetScoringStrategyWithNullFactory() {
+        User user = model.createUser("TestUser");
+        assertThrows(NullPointerException.class, () -> controleur.setScoringStrategy(user, null));
     }
 }
