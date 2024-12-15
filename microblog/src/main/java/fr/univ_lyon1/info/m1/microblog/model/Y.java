@@ -20,8 +20,15 @@ import java.util.Observable;
 /**
  * Toplevel class for the Y microbloging application's model.
  */
-public class Y extends Observable {
+public final class Y extends Observable {
+
+    // Instance unique de la classe
+    private static Y instance;
+
+    // Liste des utilisateurs
     private List<User> users = new ArrayList<>();
+
+    // Map associant chaque utilisateur à ses messages
     private LinkedHashMap<User, LinkedHashMap<Message, MessageData>>
             usersMessages = new LinkedHashMap<>();
 
@@ -34,26 +41,37 @@ public class Y extends Observable {
     // Map associant chaque utilisateur à sa stratégie de scoring
     private Map<User, ScoringStrategy> userScoringStrategies = new HashMap<>();
 
-    /** Create a user and add it to the user's registry. */
-    public User createUser(final String id) {
-        User u = new User(id);
-        users.add(u);
-        return u;
+    // Constructeur privé pour empêcher l'instanciation de la classe
+    private Y() { }
+
+    /**
+     * Récupérer l'instance unique de la classe.
+     * @return l'instance unique de la classe
+     */
+    public static synchronized Y getInstance() {
+        if (instance == null) {
+            instance = new Y();
+        } else {
+            System.out.println("Instance déjà créée");
+        }
+        return instance;
     }
 
     /**
-     * Create an example set of users and messages, for testing (not any longuer used) .
-     */
-   public void createExampleMessages() {
-//        User foo = createUser("foo");
-//        User bar = createUser("bar");
-//        add(foo, "salut tout le monde");
-//        add(bar, "Hello les masters");
-//        add(foo, "GL c'est cool");
-//        add(bar, "les etudes sans dure");
-//
-//        // Calculer les scores des messages après leur création
-//        sortMessages();
+    * Réinitialiser l'instance unique de la classe.
+    **/
+    public static synchronized void resetInstance() {
+        instance = null;
+    }
+
+    /** Create a user and add it to the user's registry. */
+    public User createUser(final String id) {
+        if (id == null) {
+            throw new NullPointerException("User ID must not be null");
+        }
+        User u = new User(id);
+        users.add(u);
+        return u;
     }
 
     /** Get the users in the registry. */
@@ -64,6 +82,9 @@ public class Y extends Observable {
 
     /** Post a message, with observer notification. **/
     public void add(final User user, final TextFlow textFlow) {
+        if (user == null || textFlow == null) {
+            throw new NullPointerException("User and TextFlow must not be null");
+        }
         // Convert TextFlow to a string representation if needed
         StringBuilder contentBuilder = new StringBuilder();
         textFlow.getChildren().forEach(node -> {
@@ -98,6 +119,9 @@ public class Y extends Observable {
      * update the strategy of scoring for a user .
      */
     public void setScoringStrategy(final User user, final ScoringStrategy selectedStrategy) {
+        if (user == null || selectedStrategy == null) {
+            throw new NullPointerException("User and ScoringStrategy must not be null");
+        }
         userScoringStrategies.put(user, selectedStrategy);
         //System.out.println("Stratégie modifiée pour " + user.getId() + " : " + selectedStrategy);
     }
@@ -130,28 +154,41 @@ public class Y extends Observable {
         // on marque que le model a changé et on notifie les vues
         setChanged();
         notifyObservers();
-        //System.out.println("Messages triés");
     }
 
     /**
      *
      * @param u
-     * @return
+     * @return la liste des messages pour un utilisateur donné
      */
-
     public LinkedHashMap<Message, MessageData> getMessageList(final User u) {
+        if (u == null) {
+            throw new NullPointerException("User must not be null");
+        }
          return  usersMessages.get(u);
     }
-    private void  setMessageList(final LinkedHashMap<Message, MessageData> messages, final User u) {
+
+    /**
+     * Ajouter une liste de messages pour un utilisateur donné.
+     * @param messages
+     * @param u
+     */
+    public void  setMessageList(final LinkedHashMap<Message, MessageData> messages, final User u) {
+        if (messages == null || u == null) {
+            throw new NullPointerException("Messages and User must not be null");
+        }
         usersMessages.put(u, messages);
     }
 
     /**
-     *
+     * Mettre à jour le score d'un message pour un utilisateur donné.
      * @param m
      * @param user
      */
     public void bookmarkMessage(final Message m, final User user) {
+        if (m == null || user == null) {
+            throw new NullPointerException("Message and User must not be null");
+        }
         // Logique de bookmark
         LinkedHashMap<Message, MessageData> userMessages = usersMessages.get(user);
         if (userMessages != null && userMessages.containsKey(m)) {
@@ -169,17 +206,20 @@ public class Y extends Observable {
      * @return
      */
     public LinkedHashMap<Message, MessageData> getFilteredMessages(final User user) {
+        if (user == null) {
+            throw new NullPointerException("User must not be null");
+        }
         LinkedHashMap<Message, MessageData> filteredMessages = new LinkedHashMap<>();
         LinkedHashMap<Message, MessageData> messages = getMessageList(user);
         //System.out.println("taille de messages = " + messages.size());
         Instant oneWeekAgo = Instant.now().minus(7, ChronoUnit.DAYS);
 
-        // si le score est > au seuil, && le message est récent ou a un bonus, on l'ajoute
+        // si le score est > au seuil (0), && le message est récent ou a un bonus, on l'ajoute
         messages.forEach((Message m, MessageData d) -> {
             Instant messageInstant = m.getTimestamp().atZone(ZoneId.systemDefault()).toInstant();
-            boolean isRecent = messageInstant.isAfter(oneWeekAgo);
-            boolean hasBonus = d.getScore() > SCORE_THRESHOLD;
-            if (d.getScore() >= SCORE_THRESHOLD && (isRecent || hasBonus)) {
+            boolean isRecent = messageInstant.isAfter(oneWeekAgo); // 7 jours
+            boolean autoriser = d.getScore() >= SCORE_THRESHOLD;
+            if (autoriser && isRecent) {
                 filteredMessages.put(m, d);
             }
         });
@@ -193,6 +233,9 @@ public class Y extends Observable {
      * @param message
      */
     public void deleteMessage(final Message message) {
+        if (message == null) {
+            throw new NullPointerException("Message must not be null");
+        }
         for (User user : users) {
             LinkedHashMap<Message, MessageData> userMessages = usersMessages.get(user);
             if (userMessages != null) {
@@ -209,6 +252,9 @@ public class Y extends Observable {
      * @return
      */
     public User getUserById(final String id) {
+        if (id == null) {
+            throw new NullPointerException("ID must not be null");
+        }
         for (User u : users) {
             if (u.getId().equals(id)) {
                 //System.out.println("User trouvé : " + u.getId());
@@ -217,4 +263,20 @@ public class Y extends Observable {
         }
         return null;
     }
+
+    /**
+     * Récupérer les messages pour tous les utilisateurs.
+     * @return une map associant chaque utilisateur à ses messages
+     */
+    public LinkedHashMap<User, LinkedHashMap<Message, MessageData>> getMessages() {
+        return usersMessages;
+    }
+
+    /**
+     * Récupérer la stratégie de scoring actuelle.
+     */
+    public Map<User, ScoringStrategy> getUserScoringStrategies() {
+        return userScoringStrategies;
+    }
+
 }

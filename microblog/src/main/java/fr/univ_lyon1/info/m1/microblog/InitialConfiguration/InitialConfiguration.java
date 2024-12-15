@@ -1,6 +1,7 @@
 package fr.univ_lyon1.info.m1.microblog.InitialConfiguration;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import fr.univ_lyon1.info.m1.microblog.model.Message;
 import fr.univ_lyon1.info.m1.microblog.model.User;
 import fr.univ_lyon1.info.m1.microblog.model.Y;
@@ -34,8 +35,11 @@ public final class InitialConfiguration {
      * Load the configuration from a JSON file.
      *
      * @param filePath the path to the JSON file.
+     * @throws FileNotFoundException if the file is not found.
+     * @throws RuntimeException if the JSON is invalid.
      */
-    public void loadConfiguration(final String filePath) {
+    public void loadConfiguration(final String filePath)
+            throws RuntimeException {
         System.out.println("Loading configuration from: " + filePath);
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filePath)) {
             if (inputStream == null) {
@@ -60,6 +64,8 @@ public final class InitialConfiguration {
                         y.add(owner, textFlow); // Add the message with the owner
                     }
                 }
+            } catch (JsonSyntaxException e) {
+                throw new RuntimeException("Invalid JSON format in file: " + filePath, e);
             }
         } catch (IOException e) {
             System.err.println("Error loading configuration: " + e.getMessage());

@@ -15,7 +15,7 @@ public class Message {
     private final User owner;
     private final Date date;
     private final SimpleDateFormat dateFormat;
-    private final LocalDateTime timestamp;
+    private LocalDateTime timestamp;
 
     /**
      * Constructor.
@@ -62,6 +62,14 @@ public class Message {
         return owner;
     }
 
+    /**
+     * Set timestamp.
+     * @param localDateTime
+     */
+    public void setTimestamp(final LocalDateTime localDateTime) {
+        this.timestamp = localDateTime;
+    }
+
     //--------------------------------------------------------------------------------
     /**
      * Builder class for the Message class.
@@ -103,6 +111,15 @@ public class Message {
          */
         public Message build() {
             return new Message(this);
+        }
+        /**
+         * mise à jour du date.
+         * @param
+         * @return the builder
+         */
+        public Builder setTime(final  LocalDateTime time) {
+            this.timestamp = time;
+            return  this;
         }
 
     }

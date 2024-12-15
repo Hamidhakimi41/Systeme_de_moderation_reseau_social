@@ -30,6 +30,9 @@ public class Controleur {
      * @param textFlow
      */
     public void publishMessage(final User user, final TextFlow textFlow) {
+        if (user == null || textFlow == null) {
+            throw new NullPointerException("User or TextFlow cannot be null");
+        }
         model.add(user, textFlow);
         model.notifyObservers(user);
     }
@@ -43,6 +46,9 @@ public class Controleur {
      */
     public void publishMessageWithDecorators(
             final User u, final String text, final String tags, final String mentions) {
+        if (u == null || text == null || tags == null || mentions == null) {
+            throw new NullPointerException("User, text, tags, or mentions cannot be null");
+        }
         Message message = new Message.Builder(text).owner(u).build();
 
         // Ajout des mentions en utilisant le décorateur
@@ -71,6 +77,9 @@ public class Controleur {
      * @param user
      */
     public void bookmarkMessage(final Message message, final User user) {
+        if (message == null || user == null) {
+            throw new NullPointerException("Message or User cannot be null");
+        }
         model.bookmarkMessage(message, user);
     }
 
@@ -80,6 +89,9 @@ public class Controleur {
      * @param factory
      */
     public void setScoringStrategy(final User user, final ScoringStrategyFactory factory) {
+        if (user == null || factory == null) {
+            throw new NullPointerException("User or ScoringStrategyFactory cannot be null");
+        }
         ScoringStrategy strategy = factory.createStrategy();
         model.setScoringStrategy(user, strategy);
     }

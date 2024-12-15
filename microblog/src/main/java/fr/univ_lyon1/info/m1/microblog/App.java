@@ -16,15 +16,14 @@ public class App extends Application {
      * With javafx, start() is called when the application is launched.
      */
     @Override
-    public void start(final Stage stage) throws Exception {
-        final Y y = new Y();
+    public void start(final Stage stage) {
+
+        // Get the unique instance of the model (singleton)
+        final Y y = Y.getInstance();
 
         // Load configuration from file
         InitialConfiguration config = new InitialConfiguration(y);
         config.loadConfiguration("config.json");
-
-        //y.createExampleMessages();
-        //System.out.println(y.getUsers().size());
 
         // Create the controller and the main view
         Controleur controleur = new Controleur(y);

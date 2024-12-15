@@ -1,0 +1,170 @@
+/* dark-theme.css */
+
+/* Style de la racine de l'application */
+.root {
+    -fx-background-color: #2b2b2b;
+    -fx-text-fill: #ffffff;
+}
+
+/* Style des étiquettes (labels) */
+.label {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+/* Style des conteneurs horizontaux et verticaux (HBox, VBox) */
+.hbox, .vbox {
+    -fx-background-color: #2b2b2b;
+    -fx-border-color: #5a5a5a;
+    -fx-border-width: 1px;
+}
+
+/* Style de la zone de texte (TextArea) pour entrer le message */
+.text-area {
+    -fx-background-color: black;
+    -fx-text-fill: #000000;
+    -fx-border-color: #5a5a5a;
+}
+
+/* Style des champs de texte (TextField) pour les tags et les mentions */
+.text-field {
+    -fx-background-color: black;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #5a5a5a;
+}
+
+/* Style des panneaux de défilement (ScrollPane) */
+.scroll-pane {
+    -fx-background-color: #2b2b2b;
+    -fx-border-color: #5a5a5a;
+    -fx-border-width: 1px;
+    -fx-padding: 10px;
+}
+
+/* Style des boutons */
+.button {
+    -fx-background-color: black;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #5a5a5a;
+    -fx-border-width: 1px;
+}
+
+/* Style des flux de texte (TextFlow) */
+.text-flow {
+    -fx-background-color: black;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+/* Style des mentions dans les flux de texte */
+.mention {
+    -fx-fill: #21A90DFF;
+    -fx-font-weight: bold;
+}
+
+/* Style des tags dans les flux de texte */
+.tag {
+    -fx-fill: blue;
+    -fx-underline: true;
+    -fx-font-weight: bold;
+}
+
+/* Style des étiquettes de date */
+.date-label {
+    -fx-text-fill: red;
+}
+
+/* Style des boîtes de messages */
+.msg-box {
+    -fx-background-color: black;
+    -fx-border-color: #5a5a5a;
+    -fx-border-width: 1;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 8px;
+    -fx-margin: 5px;
+}
+
+/* Style des boîtes de sélection (ComboBox) */
+.combo-box {
+    -fx-background-color: black;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #5a5a5a;
+}
+
+/* Style des boutons de flèche dans les boîtes de sélection */
+.combo-box .arrow-button {
+    -fx-background-color: black;
+    -fx-border-color: #5a5a5a;
+}
+
+/* Style des listes dans les boîtes de sélection */
+.combo-box .list-view {
+    -fx-background-color: black;
+    -fx-text-fill: #ffffff;
+}
+
+/* Style de la barre de défilement dans les listes des boîtes de sélection */
+.combo-box .scroll-bar {
+    -fx-background-color: black;
+    -fx-border-color: #5a5a5a;
+}
+
+/* Style des éléments de la liste des boîtes de sélection */
+.combo-box .list-cell {
+    -fx-background-color: black;
+    -fx-text-fill: #ffffff;
+}
+
+/* Style des éléments sélectionnés de la liste des boîtes de sélection */
+.combo-box .list-cell:selected {
+    -fx-background-color: #5a5a5a;
+    -fx-text-fill: #ffffff;
+}
+
+/* Style des éléments de la liste des boîtes de sélection */
+.combo-box .list-cell:filled {
+    -fx-background-color: black;
+    -fx-text-fill: #ffffff;
+}
+
+/* Style des éléments de la liste des boîtes de sélection lorsque la souris est dessus */
+.combo-box .list-cell:hover {
+    -fx-background-color: cyan;
+    -fx-text-fill: #000000;
+}
+
+/* Style de la barre de défilement verticale */
+.scroll-bar:vertical {
+    -fx-background-color: black;
+    -fx-border-color: #5a5a5a;
+}
+
+/* Style de la barre de défilement horizontale */
+.scroll-bar:horizontal {
+    -fx-background-color: black;
+    -fx-border-color: #5a5a5a;
+}
+
+/* Style du curseur de la barre de défilement */
+.scroll-bar .thumb {
+    -fx-background-color: #5a5a5a;
+}
+
+/* Style des boutons lorsque la souris est dessus */
+.button:hover {
+    -fx-background-color: #5a5a5a;
+}
+
+/* Style des boutons lorsque la souris est dessus */
+.button:pressed {
+    -fx-background-color: #5a5a5a;
+}
+
+/* Style de la zone de texte (TextArea) pour afficher les messages */
+.text-area-msg {
+    -fx-background-color: black;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #5a5a5a;
+}
